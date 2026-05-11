@@ -4,7 +4,7 @@
  * 功能描述：
  * - 使用 Playwright storageState 机制持久化闲鱼登录态
  * - 提供保存登录态（浏览器交互式登录）、校验登录态、清除登录态的能力
- * - 登录态文件存储在 .data/storage-state.json
+ * - 支持自定义登录态文件路径（包括从外部导入已有的 storageState 文件）
  *
  * @author 闲鱼自动化助手
  * @date 2026-05-11
@@ -15,8 +15,8 @@ import { chromium } from "playwright";
 
 // ========== 常量定义 ==========
 
-/** 登录态 JSON 文件路径 */
-export const STORAGE_STATE_PATH = path.resolve(
+/** 默认登录态 JSON 文件路径 */
+export const DEFAULT_STORAGE_STATE_PATH = path.resolve(
   process.cwd(),
   ".data",
   "storage-state.json"
@@ -75,33 +75,87 @@ export interface SaveSessionResult {
   cookieCount?: number;
 }
 
-// ========== 核心函数 ==========
+/**
+ * 导入登录态结果
+ */
+export interface ImportSessionResult {
+  /** 是否成功 */
+  success: boolean;
+  /** 消息描述 */
+  message: string;
+  /** 实际使用的文件路径 */
+  filePath: string;
+  /** cookies 数量 */
+  cookieCount?: number;
+  /** 域名列表 */
+  domains?: string[];
+  /** 是否有过期 cookie */
+  hasExpired?: boolean;
+  /** 完整的状态信息 */
+  status?: SessionStatus;
+}
+
+// ========== 内部工具函数 ==========
 
 /**
- * 读取存储状态文件
+ * 解析文件路径，如果未传则使用默认路径
  *
- * @returns 解析后的 storageState JSON 对象，如果文件不存在或解析失败则返回 null
+ * @param customPath - 自定义文件路径（可选）
+ * @returns 解析后的绝对路径
  */
-function readStorageState(): Record<string, unknown> | null {
+function resolveFilePath(customPath?: string): string {
+  if (customPath) {
+    return path.resolve(customPath);
+  }
+  return DEFAULT_STORAGE_STATE_PATH;
+}
+
+/**
+ * 读取指定路径的 storageState 文件
+ *
+ * @param filePath - 文件路径
+ * @returns 解析后的 JSON 对象，失败时返回 null
+ */
+function readStorageStateByPath(filePath: string): Record<string, unknown> | null {
   try {
-    if (!fs.existsSync(STORAGE_STATE_PATH)) {
+    if (!fs.existsSync(filePath)) {
       return null;
     }
-    const raw = fs.readFileSync(STORAGE_STATE_PATH, "utf-8");
+    const raw = fs.readFileSync(filePath, "utf-8");
     return JSON.parse(raw);
   } catch (error) {
-    console.error(`[SessionManager] 读取登录态文件失败:`, error);
+    console.error(`[SessionManager] 读取登录态文件失败 (${filePath}):`, error);
     return null;
   }
 }
 
 /**
- * 检查登录态文件是否存在且有效
+ * 从 JSON 对象中提取域名列表
+ */
+function extractDomains(state: Record<string, unknown>): string[] {
+  const cookies = state.cookies as Array<Record<string, unknown>> | undefined;
+  if (!Array.isArray(cookies)) return [];
+
+  const domainSet = new Set<string>();
+  for (const cookie of cookies) {
+    if (typeof cookie.domain === "string") {
+      domainSet.add(cookie.domain);
+    }
+  }
+  return Array.from(domainSet);
+}
+
+// ========== 核心函数 ==========
+
+/**
+ * 检查指定路径的登录态文件是否存在且有效
  *
+ * @param customPath - 自定义文件路径（可选，默认为 .data/storage-state.json）
  * @returns {SessionStatus} 登录态状态信息
  */
-export function checkSessionStatus(): SessionStatus {
-  const state = readStorageState();
+export function checkSessionStatus(customPath?: string): SessionStatus {
+  const filePath = resolveFilePath(customPath);
+  const state = readStorageStateByPath(filePath);
 
   // 默认状态：文件不存在
   const status: SessionStatus = {
@@ -109,20 +163,19 @@ export function checkSessionStatus(): SessionStatus {
     hasCookies: false,
     cookieCount: 0,
     isExpired: true,
-    filePath: STORAGE_STATE_PATH,
+    filePath,
     lastModified: null,
     domains: [],
   };
 
-  // 文件不存在
   if (!state) {
     return status;
   }
 
   // 文件存在
   status.exists = true;
-  status.lastModified = fs.existsSync(STORAGE_STATE_PATH)
-    ? fs.statSync(STORAGE_STATE_PATH).mtime.toISOString()
+  status.lastModified = fs.existsSync(filePath)
+    ? fs.statSync(filePath).mtime.toISOString()
     : null;
 
   // 检查是否包含 cookies
@@ -131,7 +184,7 @@ export function checkSessionStatus(): SessionStatus {
     status.hasCookies = true;
     status.cookieCount = cookies.length;
 
-    // 提取域名列表
+    // 提取域名
     const domainSet = new Set<string>();
     let hasExpired = false;
     const now = Date.now() / 1000; // 秒级时间戳
@@ -140,7 +193,6 @@ export function checkSessionStatus(): SessionStatus {
       if (typeof cookie.domain === "string") {
         domainSet.add(cookie.domain);
       }
-      // 检查是否过期
       if (typeof cookie.expires === "number" && cookie.expires > 0) {
         if (cookie.expires < now) {
           hasExpired = true;
@@ -156,23 +208,138 @@ export function checkSessionStatus(): SessionStatus {
 }
 
 /**
+ * 从指定路径导入已有的 storageState 文件作为登录态
+ *
+ * 功能描述：
+ * 1. 校验文件存在性、JSON 格式、cookies 结构
+ * 2. 将文件复制到默认路径（供后续统一使用）
+ * 3. 或直接使用该路径（设置 currentFilePath）
+ *
+ * @param sourcePath - 源文件路径（必须是有效的 Playwright storageState JSON）
+ * @param options - 可选参数
+ * @param {boolean} [options.copyToDefault] - 是否复制到默认路径（默认 true）
+ * @returns {ImportSessionResult} 导入结果
+ */
+export function importSessionFromPath(
+  sourcePath: string,
+  options?: { copyToDefault?: boolean }
+): ImportSessionResult {
+  const copyToDefault = options?.copyToDefault !== false; // 默认 true
+  const resolvedSrc = path.resolve(sourcePath);
+
+  try {
+    // 1. 校验源文件存在
+    if (!fs.existsSync(resolvedSrc)) {
+      return {
+        success: false,
+        message: `源文件不存在: ${resolvedSrc}`,
+        filePath: resolvedSrc,
+      };
+    }
+
+    // 2. 校验 JSON 格式
+    let state: Record<string, unknown>;
+    try {
+      const raw = fs.readFileSync(resolvedSrc, "utf-8");
+      state = JSON.parse(raw);
+    } catch {
+      return {
+        success: false,
+        message: `文件不是有效的 JSON 格式: ${resolvedSrc}`,
+        filePath: resolvedSrc,
+      };
+    }
+
+    // 3. 校验 cookies 结构
+    const cookies = state.cookies as Array<unknown> | undefined;
+    if (!Array.isArray(cookies) || cookies.length === 0) {
+      return {
+        success: false,
+        message: `文件中没有找到有效的 cookies 数据`,
+        filePath: resolvedSrc,
+      };
+    }
+
+    // 提取域名和检查过期
+    const domainSet = new Set<string>();
+    let hasExpired = false;
+    const now = Date.now() / 1000;
+    for (const cookie of cookies) {
+      const c = cookie as Record<string, unknown>;
+      if (typeof c.domain === "string") domainSet.add(c.domain);
+      if (typeof c.expires === "number" && c.expires > 0 && c.expires < now) {
+        hasExpired = true;
+      }
+    }
+
+    const domains = Array.from(domainSet);
+
+    // 4. 处理文件
+    let targetPath: string;
+    if (copyToDefault) {
+      // 复制到默认路径
+      targetPath = DEFAULT_STORAGE_STATE_PATH;
+      const dir = path.dirname(targetPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(targetPath, JSON.stringify(state, null, 2), "utf-8");
+    } else {
+      // 直接使用源路径
+      targetPath = resolvedSrc;
+    }
+
+    // 5. 构建状态信息
+    const status = checkSessionStatus(
+      copyToDefault ? undefined : resolvedSrc
+    );
+
+    console.log(`[SessionManager] 导入登录态成功: ${resolvedSrc} → ${targetPath}`);
+    console.log(`[SessionManager] Cookies: ${cookies.length}, 域名: ${domains.join(", ")}`);
+
+    return {
+      success: true,
+      message: `导入成功，共 ${cookies.length} 个 Cookie${
+        hasExpired ? "（部分已过期）" : ""
+      }`,
+      filePath: targetPath,
+      cookieCount: cookies.length,
+      domains,
+      hasExpired,
+      status,
+    };
+  } catch (error) {
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error(`[SessionManager] 导入登录态失败:`, errMsg);
+    return {
+      success: false,
+      message: `导入失败: ${errMsg}`,
+      filePath: resolvedSrc,
+    };
+  }
+}
+
+/**
  * 校验登录态是否有效（通过实际访问闲鱼页面检测）
  *
  * 功能描述：使用 Playwright 加载存储的登录态，访问闲鱼首页，
  * 通过检测是否跳转到登录页来判断登录态是否有效。
  *
+ * @param customPath - 自定义文件路径（可选）
  * @returns {Promise<{ valid: boolean; message: string }>} 校验结果
  */
-export async function validateSession(): Promise<{
+export async function validateSession(customPath?: string): Promise<{
   valid: boolean;
   message: string;
 }> {
+  const filePath = resolveFilePath(customPath);
+
   // 先检查文件是否存在
-  const status = checkSessionStatus();
+  const status = checkSessionStatus(customPath);
   if (!status.exists || !status.hasCookies) {
     return {
       valid: false,
-      message: "登录态文件不存在或为空，请先保存登录态",
+      message: `登录态文件不存在或为空: ${filePath}`,
     };
   }
 
@@ -186,7 +353,7 @@ export async function validateSession(): Promise<{
 
     // 使用存储的登录态创建上下文
     const context = await browser.newContext({
-      storageState: STORAGE_STATE_PATH,
+      storageState: filePath,
     });
     const page = await context.newPage();
 
@@ -271,18 +438,18 @@ export async function validateSession(): Promise<{
  * 1. 启动 Playwright Chromium 浏览器（有界面模式）
  * 2. 导航到闲鱼首页
  * 3. 等待用户手动完成登录操作
- * 4. 用户在终端按 Enter 后导出登录态
- *
- * 注意：此函数会启动一个浏览器窗口，需要用户手动操作登录，
- * 然后回到终端按 Enter 确认。
+ * 4. 导出登录态
  *
  * @param {object} [options] 可选参数
  * @param {number} [options.port] CDP 端口（如果提供，则连接到已有浏览器）
+ * @param {string} [options.savePath] 自定义保存路径（可选）
  * @returns {Promise<SaveSessionResult>} 保存结果
  */
 export async function saveSessionInteractive(options?: {
   port?: number;
+  savePath?: string;
 }): Promise<SaveSessionResult> {
+  const savePath = resolveFilePath(options?.savePath);
   let browser;
   let context;
 
@@ -320,13 +487,13 @@ export async function saveSessionInteractive(options?: {
     });
     await page.bringToFront();
 
-    // 返回结果，让调用者等待用户确认后调用 finalizeSaveSession
+    // 返回结果
     return {
       success: true,
       message:
         "浏览器已打开，请完成登录后按 Enter 确认保存。\n" +
         "如果已登录，可直接在终端按 Enter。",
-      filePath: STORAGE_STATE_PATH,
+      filePath: savePath,
     };
   } catch (error) {
     // 确保资源释放
@@ -343,45 +510,49 @@ export async function saveSessionInteractive(options?: {
     return {
       success: false,
       message: `保存登录态失败: ${errMsg}`,
-      filePath: STORAGE_STATE_PATH,
+      filePath: savePath,
     };
   }
 }
 
 /**
- * 最终确定保存登录态
+ * 最终确定保存登录态并写入文件
  *
  * 功能描述：从当前 Playwright 浏览器上下文导出 storageState 并保存到文件。
- * 此函数应在 saveSessionInteractive 之后调用。
  *
- * @returns {SaveSessionResult} 保存结果
+ * @param page - Playwright Page 实例
+ * @param savePath - 自定义保存路径（可选）
+ * @returns {Promise<SaveSessionResult>} 保存结果
  */
-export async function finalizeSaveSessionFromPage(page: any): Promise<SaveSessionResult> {
+export async function finalizeSaveSessionFromPage(
+  page: any,
+  savePath?: string
+): Promise<SaveSessionResult> {
+  const targetPath = resolveFilePath(savePath);
+
   try {
     // 获取当前页面的 context 并导出 storageState
     const context = page.context();
     const state = await context.storageState();
 
     // 确保目录存在
-    const dir = path.dirname(STORAGE_STATE_PATH);
+    const dir = path.dirname(targetPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
 
     // 写入文件
-    fs.writeFileSync(STORAGE_STATE_PATH, JSON.stringify(state, null, 2), "utf-8");
+    fs.writeFileSync(targetPath, JSON.stringify(state, null, 2), "utf-8");
 
     const cookieCount = (state.cookies || []).length;
 
-    console.log(
-      `[SessionManager] 登录态已保存: ${STORAGE_STATE_PATH}`
-    );
+    console.log(`[SessionManager] 登录态已保存: ${targetPath}`);
     console.log(`[SessionManager] Cookies 数量: ${cookieCount}`);
 
     return {
       success: true,
       message: `登录态已保存成功，共 ${cookieCount} 个 Cookie`,
-      filePath: STORAGE_STATE_PATH,
+      filePath: targetPath,
       cookieCount,
     };
   } catch (error) {
@@ -390,7 +561,7 @@ export async function finalizeSaveSessionFromPage(page: any): Promise<SaveSessio
     return {
       success: false,
       message: `保存登录态失败: ${errMsg}`,
-      filePath: STORAGE_STATE_PATH,
+      filePath: targetPath,
     };
   }
 }
@@ -398,15 +569,17 @@ export async function finalizeSaveSessionFromPage(page: any): Promise<SaveSessio
 /**
  * 清除已保存的登录态
  *
- * @returns {{ success: boolean; message: string }} 清除结果
+ * @param customPath - 自定义文件路径（可选）
+ * @returns {{ success: boolean; message: string }}
  */
-export function clearSession(): { success: boolean; message: string } {
+export function clearSession(customPath?: string): { success: boolean; message: string } {
+  const filePath = resolveFilePath(customPath);
   try {
-    if (fs.existsSync(STORAGE_STATE_PATH)) {
-      fs.unlinkSync(STORAGE_STATE_PATH);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
       return {
         success: true,
-        message: "登录态已清除",
+        message: `登录态已清除: ${filePath}`,
       };
     }
     return {
@@ -426,22 +599,24 @@ export function clearSession(): { success: boolean; message: string } {
 /**
  * 获取登录态文件信息
  *
+ * @param customPath - 自定义文件路径（可选）
  * @returns {{ exists: boolean; fileSize: number; lastModified: string | null; path: string }}
  */
-export function getSessionFileInfo(): {
+export function getSessionFileInfo(customPath?: string): {
   exists: boolean;
   fileSize: number;
   lastModified: string | null;
   path: string;
 } {
+  const filePath = resolveFilePath(customPath);
   try {
-    if (fs.existsSync(STORAGE_STATE_PATH)) {
-      const stat = fs.statSync(STORAGE_STATE_PATH);
+    if (fs.existsSync(filePath)) {
+      const stat = fs.statSync(filePath);
       return {
         exists: true,
         fileSize: stat.size,
         lastModified: stat.mtime.toISOString(),
-        path: STORAGE_STATE_PATH,
+        path: filePath,
       };
     }
   } catch {
@@ -451,6 +626,6 @@ export function getSessionFileInfo(): {
     exists: false,
     fileSize: 0,
     lastModified: null,
-    path: STORAGE_STATE_PATH,
+    path: filePath,
   };
 }

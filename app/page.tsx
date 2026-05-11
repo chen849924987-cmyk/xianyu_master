@@ -116,6 +116,9 @@ export default function HomePage() {
   const [sessionValidating, setSessionValidating] = useState(false);
   const [sessionSaving, setSessionSaving] = useState(false);
   const [sessionCDPPort, setSessionCDPPort] = useState("9222");
+  const [sessionCustomPath, setSessionCustomPath] = useState("");
+  const [sessionImportPath, setSessionImportPath] = useState("");
+  const [sessionImporting, setSessionImporting] = useState(false);
 
   // 模态框状态
   const [modalOpen, setModalOpen] = useState(false);
@@ -459,6 +462,58 @@ export default function HomePage() {
     }
   }, [apiFetch, loadSessionStatus, showToast]);
 
+  /** 导入已有的 storageState 文件 */
+  const handleImportSession = useCallback(async () => {
+    if (!sessionImportPath.trim()) {
+      showToast("请先输入要导入的文件路径", "error");
+      return;
+    }
+    setSessionImporting(true);
+    try {
+      const resp = await fetch("/api/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "import", sourcePath: sessionImportPath.trim() }),
+      });
+      const json = await resp.json();
+      if (json.success && json.data?.success) {
+        const result = json.data;
+        showToast(
+          `✅ 导入成功！共 ${result.cookieCount} 个 Cookie，域名: ${(result.domains || []).join(", ")}`,
+          "success"
+        );
+        loadSessionStatus();
+      } else {
+        showToast(`导入失败: ${json.data?.message || json.error || "未知错误"}`, "error");
+      }
+    } catch (e: unknown) {
+      showToast(`导入失败: ${e instanceof Error ? e.message : ""}`, "error");
+    } finally {
+      setSessionImporting(false);
+    }
+  }, [sessionImportPath, loadSessionStatus, showToast]);
+
+  /** 使用自定义文件路径查看状态 */
+  const handleCheckCustomPath = useCallback(async () => {
+    if (!sessionCustomPath.trim()) {
+      showToast("请先输入要查看的文件路径", "error");
+      return;
+    }
+    try {
+      const queryPath = encodeURIComponent(sessionCustomPath.trim());
+      const resp = await fetch(`/api/session?filePath=${queryPath}`);
+      const json = await resp.json();
+      if (json.success) {
+        setSessionStatus(json.data);
+        showToast("已切换到自定义文件路径查看状态", "info");
+      } else {
+        showToast(`查看失败: ${json.error || "未知错误"}`, "error");
+      }
+    } catch (e: unknown) {
+      showToast(`查看失败: ${e instanceof Error ? e.message : ""}`, "error");
+    }
+  }, [sessionCustomPath, showToast]);
+
   // ========== 统计数据 ==========
   const stats = {
     total: availableTasks.length,
@@ -684,6 +739,70 @@ export default function HomePage() {
                     disabled={!isLoggedIn}
                   >
                     🗑️ 清除登录态
+                  </button>
+                </div>
+              </div>
+
+              <div className="session-divider" />
+
+              {/* 自定义文件路径区域 */}
+              <div className="session-action-group">
+                <div className="session-action-title">📁 查看其他文件路径</div>
+                <div className="session-action-desc">
+                  输入自定义的 storageState 文件路径来查看其登录态状态信息。
+                </div>
+                <div className="session-cdp-config" style={{ flexWrap: "wrap" }}>
+                  <input
+                    className="form-control"
+                    style={{ flex: 1, minWidth: 200 }}
+                    type="text"
+                    value={sessionCustomPath}
+                    onChange={(e) => setSessionCustomPath(e.target.value)}
+                    placeholder="输入完整的文件路径，如 D:\work\storage.json"
+                  />
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={handleCheckCustomPath}
+                    disabled={!sessionCustomPath.trim()}
+                  >
+                    🔍 查看状态
+                  </button>
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => {
+                      setSessionCustomPath("");
+                      loadSessionStatus();
+                      showToast("已恢复到默认路径", "info");
+                    }}
+                  >
+                    ↩ 恢复默认
+                  </button>
+                </div>
+              </div>
+
+              <div className="session-divider" />
+
+              {/* 导入已有文件区域 */}
+              <div className="session-action-group">
+                <div className="session-action-title">📥 导入已有登录态文件</div>
+                <div className="session-action-desc">
+                  从其他路径导入已有的 Playwright storageState JSON 文件。文件会被复制到默认存储路径使用。
+                </div>
+                <div className="session-cdp-config" style={{ flexWrap: "wrap" }}>
+                  <input
+                    className="form-control"
+                    style={{ flex: 1, minWidth: 200 }}
+                    type="text"
+                    value={sessionImportPath}
+                    onChange={(e) => setSessionImportPath(e.target.value)}
+                    placeholder="输入要导入的 storageState JSON 文件路径"
+                  />
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={handleImportSession}
+                    disabled={sessionImporting || !sessionImportPath.trim()}
+                  >
+                    {sessionImporting ? <><span className="spinner" /> 导入中...</> : "📥 导入并覆盖"}
                   </button>
                 </div>
               </div>

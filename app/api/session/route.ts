@@ -1,12 +1,11 @@
 /**
  * 登录态管理 API
  *
- * 功能描述：提供登录态的查询、保存、校验、清除等 REST API 接口
+ * 功能描述：提供登录态的查询、保存、校验、清除、导入等 REST API 接口
  *
- * @route GET /api/session - 查询当前登录态状态
- * @route POST /api/session - 保存/刷新登录态
- * @route DELETE /api/session - 清除登录态
- * @route POST /api/session/validate - 校验登录态是否有效
+ * @route GET    /api/session - 查询当前登录态状态（支持 ?filePath=xxx 参数）
+ * @route POST   /api/session - 保存/校验/刷新/导入登录态（支持 filePath 参数）
+ * @route DELETE /api/session - 清除登录态（支持 ?filePath=xxx 参数）
  */
 import { NextRequest, NextResponse } from "next/server";
 import {
@@ -16,8 +15,10 @@ import {
   saveSessionInteractive,
   finalizeSaveSessionFromPage,
   getSessionFileInfo,
+  importSessionFromPath,
   SessionStatus,
   SaveSessionResult,
+  ImportSessionResult,
 } from "@/lib/session-manager";
 
 /**
@@ -27,16 +28,48 @@ import {
 let currentPageRef: any = null;
 
 /**
+ * 从请求中提取可选的 filePath 参数
+ *
+ * @param request - Next.js 请求对象
+ * @returns 自定义文件路径，如果未提供则返回 undefined
+ */
+function getFilePathFromRequest(request: NextRequest): string | undefined {
+  const url = new URL(request.url);
+  const filePathParam = url.searchParams.get("filePath");
+  // 也检查 body 中的 filePath
+  return filePathParam || undefined;
+}
+
+/**
+ * 从请求 body 和 URL 查询参数中提取可选的 filePath
+ *
+ * @param request - Next.js 请求对象
+ * @param body - 已解析的请求体
+ * @returns 自定义文件路径，如果未提供则返回 undefined
+ */
+function extractFilePath(request: NextRequest, body?: Record<string, unknown>): string | undefined {
+  // 优先使用 body 中的 filePath
+  if (body?.filePath && typeof body.filePath === "string" && body.filePath.trim()) {
+    return body.filePath.trim();
+  }
+  // 其次使用查询参数
+  return getFilePathFromRequest(request);
+}
+
+/**
  * GET /api/session
  *
  * 查询登录态状态信息，包括文件存在性、cookies 数量、是否过期等
+ * 支持自定义文件路径（?filePath=xxx）
  *
+ * @param {NextRequest} request - 可选查询参数 filePath
  * @returns {NextResponse} 包含登录态状态信息的 JSON 响应
  */
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
-    const status: SessionStatus = checkSessionStatus();
-    const fileInfo = getSessionFileInfo();
+    const filePath = getFilePathFromRequest(request);
+    const status: SessionStatus = checkSessionStatus(filePath);
+    const fileInfo = getSessionFileInfo(filePath);
 
     return NextResponse.json({
       success: true,
@@ -60,22 +93,46 @@ export async function GET(): Promise<NextResponse> {
 /**
  * POST /api/session
  *
- * 保存登录态。支持两种模式：
- * 1. 普通模式：启动浏览器等待用户登录（action: "save"）
- * 2. 从 CDP 浏览器保存（action: "saveFromCDP", 需传入 port）
- * 3. 最终确定保存（action: "finalize"）
+ * 保存登录态。支持多种模式：
+ * 1. 校验登录态（action: "validate"）— 支持 filePath
+ * 2. 启动浏览器保存（action: "save"）— 支持 filePath/port
+ * 3. 从 CDP 浏览器保存（action: "saveFromCDP"）— 支持 filePath/port
+ * 4. 最终确定保存（action: "finalize"）— 支持 filePath
+ * 5. 导入已有文件（action: "import"）— 支持 sourcePath/copyToDefault
  *
- * @param {NextRequest} request - 请求体需包含 { action: string, port?: number }
- * @returns {NextResponse} 保存结果
+ * @param {NextRequest} request - 请求体需包含 { action, filePath?, port?, sourcePath?, copyToDefault? }
+ * @returns {NextResponse} 操作结果
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json().catch(() => ({}));
-    const { action, port } = body;
+    const { action, port, sourcePath, copyToDefault } = body as Record<string, unknown>;
+    const filePath = extractFilePath(request, body);
+
+    // === 导入已有的 storageState 文件 ===
+    if (action === "import") {
+      if (!sourcePath || typeof sourcePath !== "string") {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "导入操作需要提供 sourcePath 参数（源文件路径）",
+          },
+          { status: 400 }
+        );
+      }
+      const result: ImportSessionResult = importSessionFromPath(
+        sourcePath,
+        { copyToDefault: copyToDefault !== false }
+      );
+      return NextResponse.json({
+        success: result.success,
+        data: result,
+      });
+    }
 
     // === 校验登录态 ===
     if (action === "validate") {
-      const result = await validateSession();
+      const result = await validateSession(filePath);
       return NextResponse.json({
         success: true,
         data: result,
@@ -85,12 +142,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // === 启动浏览器保存登录态 ===
     if (action === "save") {
       const result: SaveSessionResult = await saveSessionInteractive({
-        port: port || undefined,
+        port: typeof port === "number" ? port : undefined,
+        savePath: filePath,
       });
       return NextResponse.json({
         success: result.success,
         data: result,
-        // 如果是启动浏览器的模式，需要告知前端等待用户操作
         requiresUserAction: !port,
       });
     }
@@ -106,8 +163,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           { status: 400 }
         );
       }
-      const result = await finalizeSaveSessionFromPage(currentPageRef);
-      currentPageRef = null; // 清除引用
+      const result = await finalizeSaveSessionFromPage(currentPageRef, filePath);
+      currentPageRef = null;
       return NextResponse.json({
         success: result.success,
         data: result,
@@ -125,7 +182,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           { status: 400 }
         );
       }
-      const result: SaveSessionResult = await saveSessionInteractive({ port });
+      const result: SaveSessionResult = await saveSessionInteractive({
+        port: typeof port === "number" ? port : parseInt(String(port), 10),
+        savePath: filePath,
+      });
       return NextResponse.json({
         success: result.success,
         data: result,
@@ -135,7 +195,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: "未知的 action，支持: save, saveFromCDP, finalize, validate",
+        error: "未知的 action，支持: save, saveFromCDP, finalize, validate, import",
       },
       { status: 400 }
     );
@@ -154,13 +214,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 /**
  * DELETE /api/session
  *
- * 清除已保存的登录态文件
+ * 清除已保存的登录态文件。支持自定义文件路径（?filePath=xxx）
  *
+ * @param {NextRequest} request - 可选查询参数 filePath
  * @returns {NextResponse} 清除结果
  */
-export async function DELETE(): Promise<NextResponse> {
+export async function DELETE(request: NextRequest): Promise<NextResponse> {
   try {
-    const result = clearSession();
+    const filePath = getFilePathFromRequest(request);
+    const result = clearSession(filePath);
     return NextResponse.json({
       success: result.success,
       data: result,
