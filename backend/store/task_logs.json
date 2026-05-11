@@ -1,0 +1,114 @@
+[
+  {
+    "id": "1778460825407",
+    "scriptPath": "tasks/search_shop_links_by_keyword.js",
+    "startTime": "2026-05-11T00:53:45.407Z",
+    "endTime": "2026-05-11T00:53:45.460Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'D:\\工作\\xianyu_master\\tasks\\search_shop_links_by_keyword.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460824844",
+    "scriptPath": "tasks/publish_links.js",
+    "startTime": "2026-05-11T00:53:44.844Z",
+    "endTime": "2026-05-11T00:53:44.902Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'D:\\工作\\xianyu_master\\tasks\\publish_links.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460824100",
+    "scriptPath": "tasks/get_feishu_chat_links.js",
+    "startTime": "2026-05-11T00:53:44.100Z",
+    "endTime": "2026-05-11T00:53:44.160Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'D:\\工作\\xianyu_master\\tasks\\get_feishu_chat_links.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460821784",
+    "scriptPath": "tasks/auto_reply.js",
+    "startTime": "2026-05-11T00:53:41.784Z",
+    "endTime": "2026-05-11T00:53:41.845Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'D:\\工作\\xianyu_master\\tasks\\auto_reply.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460819928",
+    "scriptPath": "tasks/get_shop_review_data.js",
+    "startTime": "2026-05-11T00:53:39.928Z",
+    "endTime": "2026-05-11T00:53:39.992Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'D:\\工作\\xianyu_master\\tasks\\get_shop_review_data.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460739107",
+    "scriptPath": "tasks/get_shop_review_data.js",
+    "startTime": "2026-05-11T00:52:19.107Z",
+    "endTime": "2026-05-11T00:52:19.159Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'd:\\工作\\xianyu_master\\tasks\\get_shop_review_data.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460735689",
+    "scriptPath": "tasks/search_shop_links_by_keyword.js",
+    "startTime": "2026-05-11T00:52:15.689Z",
+    "endTime": "2026-05-11T00:52:15.745Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'd:\\工作\\xianyu_master\\tasks\\search_shop_links_by_keyword.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460735148",
+    "scriptPath": "tasks/auto_chat_link.js",
+    "startTime": "2026-05-11T00:52:15.148Z",
+    "endTime": "2026-05-11T00:52:15.203Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'd:\\工作\\xianyu_master\\tasks\\auto_chat_link.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460734543",
+    "scriptPath": "tasks/get_feishu_chat_links.js",
+    "startTime": "2026-05-11T00:52:14.543Z",
+    "endTime": "2026-05-11T00:52:14.598Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'd:\\工作\\xianyu_master\\tasks\\get_feishu_chat_links.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460734120",
+    "scriptPath": "tasks/publish_links.js",
+    "startTime": "2026-05-11T00:52:14.120Z",
+    "endTime": "2026-05-11T00:52:14.176Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'd:\\工作\\xianyu_master\\tasks\\publish_links.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460733730",
+    "scriptPath": "tasks/process_link_cozi.js",
+    "startTime": "2026-05-11T00:52:13.731Z",
+    "endTime": "2026-05-11T00:52:13.788Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'd:\\工作\\xianyu_master\\tasks\\process_link_cozi.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460733081",
+    "scriptPath": "tasks/get_shop_links.js",
+    "startTime": "2026-05-11T00:52:13.081Z",
+    "endTime": "2026-05-11T00:52:13.140Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'd:\\工作\\xianyu_master\\tasks\\get_shop_links.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460732456",
+    "scriptPath": "tasks/auto_reply.js",
+    "startTime": "2026-05-11T00:52:12.456Z",
+    "endTime": "2026-05-11T00:52:12.514Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'd:\\工作\\xianyu_master\\tasks\\auto_reply.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  },
+  {
+    "id": "1778460730653",
+    "scriptPath": "tasks/get_shop_review_data.js",
+    "startTime": "2026-05-11T00:52:10.653Z",
+    "endTime": "2026-05-11T00:52:10.711Z",
+    "status": "failed",
+    "output": "node:internal/modules/cjs/loader:1228\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'd:\\工作\\xianyu_master\\tasks\\get_shop_review_data.js'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:internal/main/run_main_module:36:49 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v22.14.0\r\n"
+  }
+]
