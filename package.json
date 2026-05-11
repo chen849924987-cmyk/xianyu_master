@@ -1,24 +1,32 @@
 {
   "name": "xianyu-master",
   "version": "2.0.0",
-  "description": "闲鱼自动化助手 - 本地 Web 服务",
-  "main": "backend/main.cjs",
+  "description": "闲鱼自动化助手 - Next.js 管理面板",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node backend/main.cjs",
-    "menu": "node backend/scripts/menu.js",
-    "chrome": "node backend/scripts/start_chrome.bat"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "server": "node backend/main.cjs",
+    "menu": "node backend/scripts/menu.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "dependencies": {
     "dayjs": "^1.11.19",
-    "inquirer": "^13.0.2",
-    "node-cron": "^4.2.1",
-    "playwright": "^1.57.0",
-    "sharp": "^0.34.5",
+    "next": "^15.3.1",
+    "node-cron": "4.2.1",
+    "playwright": "^1.59.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sharp": "0.34.5",
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.4",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.8.3"
   }
 }

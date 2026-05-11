@@ -2,6 +2,10 @@
 output/
 input/
 
+# 登录态文件（含会话 Cookie，禁止提交）
+.data/
+.data/storage-state.json
+
 # 发布记录为本地数据，仓库仅保留 publish_records.json.example 空模板
 backend/store/publish_records.json
 
