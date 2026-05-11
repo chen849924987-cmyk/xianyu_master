@@ -6,12 +6,13 @@ echo ==========================================
 echo         闲鱼自动化助手 - 正在启动...
 echo ==========================================
 echo.
-echo 首次启动可能需要等待几秒钟
-echo 如需关闭，请直接关闭应用窗口
+echo 服务启动后请访问: http://localhost:3000
+echo 如需关闭，请按 Ctrl+C
 echo.
 
-:: 使用 Electron 启动应用
-pnpm run dev
+:: 启动 Node.js 服务（后端工作在 backend/ 目录）
+cd /d "%~dp0"
+node backend/main.cjs
 
 if %errorlevel% neq 0 (
     echo.

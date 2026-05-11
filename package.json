@@ -1,13 +1,13 @@
 {
   "name": "xianyu-master",
   "version": "2.0.0",
-  "description": "闲鱼自动化助手 - 桌面应用",
-  "main": "backend/main.js",
+  "description": "闲鱼自动化助手 - 本地 Web 服务",
+  "main": "backend/main.cjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node menu.js",
-    "electron": "electron .",
-    "dev": "electron ."
+    "start": "node backend/main.cjs",
+    "menu": "node backend/scripts/menu.js",
+    "chrome": "node backend/scripts/start_chrome.bat"
   },
   "keywords": [],
   "author": "",
@@ -15,8 +15,6 @@
   "type": "module",
   "dependencies": {
     "dayjs": "^1.11.19",
-    "electron": "41.3.0",
-    "electron-store": "^11.0.2",
     "inquirer": "^13.0.2",
     "node-cron": "^4.2.1",
     "playwright": "^1.57.0",

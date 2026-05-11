@@ -1,7 +1,7 @@
 # 闲鱼自动化助手 (xianyu-master)
 
-> **版本**：v2.0.0（架构转型中）
-> **项目状态**：从 Electron 桌面应用 → 本地前后端 Web 方案
+> **版本**：v2.0.0（架构已转型）
+> **项目状态**：已完成前后端分离改造
 
 ---
 
@@ -9,7 +9,9 @@
 
 闲鱼自动化助手是一款基于 **Node.js + Playwright** 构建的闲鱼电商运营自动化工具。它能够帮助卖家自动完成店铺数据采集、商品监控、自动回复、批量发布等日常运营操作，大幅提升运营效率。
 
-本项目最初以 **Electron 桌面应用** 形态开发，目前正在向 **前后端分离的本地 Web 方案** 转型，以提供更好的可维护性、可扩展性和用户体验。
+本项目已完成 **前后端分离架构转型**：
+- **`frontend/`** — 前端静态页面（HTML + CSS + JS），通过 HTTP API 与后端通信
+- **`backend/`** — 后端 Node.js HTTP 服务器（非 Electron），提供 REST API + SSE 实时推送
 
 ---
 
@@ -32,35 +34,25 @@
 
 ## 技术栈
 
-### 当前架构（转型中）
+### 当前架构
 
 | 层级 | 技术选型 |
 |------|---------|
-| **后端运行时** | Node.js (ES Modules) |
+| **后端运行时** | Node.js (ES Modules / CJS) |
+| **前端** | HTML + CSS + JS (直接 HTTP 请求) |
 | **浏览器自动化** | Playwright (Chromium) |
 | **浏览器连接** | CDP (Chrome DevTools Protocol) |
 | **任务调度** | node-cron |
-| **数据存储** | electron-store / Excel (xlsx) |
+| **数据存储** | JSON 文件存储 / Excel (xlsx) |
 | **图像处理** | sharp |
-| **桌面壳层** | Electron（即将废弃） |
-| **前端** | HTML + JavaScript（即将升级） |
-
-### 目标架构（Web 方案）
-
-| 层级 | 技术选型 |
-|------|---------|
-| **全栈框架** | Next.js (React + API Routes) |
-| **前端 UI** | React + Tailwind CSS |
-| **浏览器自动化** | Playwright (保持不变) |
-| **数据库** | SQLite / JSON 文件存储 |
-| **任务调度** | node-cron (保持不变) |
-| **数据导出** | xlsx (保持不变) |
+| **实时推送** | Server-Sent Events (SSE) |
 
 ---
 
 ## 技术栈文档
 
 详见：[docs/tech-stack.md](./tech-stack.md)
+
 ---
 
 ## 快速开始
@@ -92,7 +84,7 @@ npx playwright install chromium
 **模式一：连接本机已有 Chrome（推荐）**
 ```bash
 # 启动 Chrome 远程调试模式
-start_chrome.bat
+backend\scripts\start_chrome.bat
 ```
 
 **模式二：由 Playwright 自动启动浏览器**
@@ -101,11 +93,15 @@ start_chrome.bat
 ### 运行任务
 
 ```bash
-# 方式一：通过命令行交互菜单启动
+# 方式一：启动 Web 管理界面
 npm start
+# 访问 http://localhost:3000
 
-# 方式二：直接运行特定任务脚本
-node tasks/get_shop_review_data.js
+# 方式二：命令行交互菜单
+npm run menu
+
+# 方式三：直接运行特定任务脚本
+node backend/tasks/get_shop_review_data.js
 ```
 
 ### 登录态管理
@@ -128,67 +124,78 @@ xianyu_master/
 │   ├── AI-handbook-xianyu-login-session.md  # 登录态操作手册
 │   └── harness-evaluation.md      # Harness 工程评估
 │
-├── tasks/                         # 自动化任务脚本
-│   ├── auto_chat_link.js          # 自动聊天链接
-│   ├── auto_reply.js              # 自动回复
-│   ├── get_feishu_chat_links.js   # 飞书聊天链接获取
-│   ├── get_shop_link_date_data.js # 店铺链接日期数据
-│   ├── get_shop_links.js          # 获取店铺链接
-│   ├── get_shop_review_data.js    # 店铺每日售出数据
-│   ├── process_image.js           # 图片处理
-│   ├── process_link_cozi.js       # 链接资源处理
-│   ├── publish_links.js           # 发布链接
-│   └── search_shop_links_by_keyword.js  # 关键词搜索
+├── frontend/                      # 前端代码（独立目录）
+│   └── index.html                 # Web 管理界面
 │
-├── modules/                       # 功能模块
-│   ├── shop_data/                 # 店铺数据模块
-│   │   └── shop_data.js           # 店铺页面操作核心逻辑
-│   ├── chat_page/                 # 聊天页面模块
-│   │   └── chat_page.js
-│   ├── aqisuo/                    # 阿奇索模块
-│   │   └── aqisuo.js
-│   ├── feishu/                    # 飞书集成模块
-│   │   └── feishu.js
-│   ├── kouzi/                     # 口子模块
-│   │   └── kouzi.js
-│   └── image/                     # 图像资源模块
-│       └── image.js
+├── backend/                       # 后端代码（全部业务逻辑）
+│   ├── main.cjs                   # HTTP 服务器入口
+│   ├── tasks/                     # 自动化任务脚本
+│   │   ├── auto_chat_link.js
+│   │   ├── auto_reply.js
+│   │   ├── get_feishu_chat_links.js
+│   │   ├── get_shop_link_date_data.js
+│   │   ├── get_shop_links.js
+│   │   ├── get_shop_review_data.js
+│   │   ├── process_image.js
+│   │   ├── process_link_cozi.js
+│   │   ├── publish_links.js
+│   │   └── search_shop_links_by_keyword.js
+│   ├── modules/                   # 功能模块
+│   │   ├── shop_data/shop_data.js
+│   │   ├── chat_page/chat_page.js
+│   │   ├── aqisuo/aqisuo.js
+│   │   ├── feishu/feishu.js
+│   │   ├── kouzi/kouzi.js
+│   │   └── image/image.js
+│   ├── utils/                     # 工具库
+│   │   ├── browser.js
+│   │   ├── chrome_remote_debug.js
+│   │   ├── color.js
+│   │   ├── dir.js
+│   │   ├── extract_like_links.js
+│   │   ├── file.js
+│   │   ├── html-to-image.js
+│   │   ├── image.js
+│   │   └── utils.js
+│   ├── store/                     # 数据存储
+│   │   ├── index.js
+│   │   └── publish_records.json.example
+│   ├── scripts/                   # 辅助脚本
+│   │   ├── menu.js                # CLI 交互菜单
+│   │   ├── check_chrome.js        # Chrome 调试端口检测
+│   │   └── index.js               # 旧版入口
+│   ├── examples/                  # 示例脚本
+│   │   └── example-html-to-image.js
+│   └── output/                    # 输出结果目录（gitignored）
 │
-├── utils/                         # 工具库
-│   ├── browser.js                 # 浏览器管理（核心 - Browser 类）
-│   ├── chrome_remote_debug.js     # Chrome 远程调试连接
-│   ├── color.js                   # 颜色工具
-│   ├── dir.js                     # 目录工具
-│   ├── extract_like_links.js      # 链接提取工具
-│   ├── file.js                    # 文件操作（含 Excel 导出）
-│   ├── html-to-image.js           # HTML 转图片
-│   ├── image.js                   # 图像处理工具
-│   └── utils.js                   # 通用工具函数
-│
-├── store/                         # 数据存储
-│   ├── index.js                   # 存储接口
-│   └── publish_records.json.example  # 发布记录示例
-│
-├── input/                         # 输入数据目录
-├── output/                        # 输出结果目录
-│
-├── frontend/                      # 前端代码（Electron 渲染进程）
-│   ├── index.html                 # 主界面（HeroUI 风格 UI）
-│   └── preload.js                 # Electron 预加载脚本
-│
-├── backend/                       # 后端代码（Electron 主进程）
-│   └── main.js                    # Electron 主进程入口
-│
-├── menu.js                        # CLI 菜单入口
+├── .clinerules/                   # 开发规范配置
 ├── package.json                   # 项目配置
-└── pnpm-workspace.yaml            # pnpm 工作区配置
+├── pnpm-workspace.yaml            # pnpm 工作区配置
+├── .gitignore                     # Git 忽略规则
+├── 启动闲鱼助手.bat               # Windows 一键启动脚本
+└── create_shortcut.ps1            # 创建桌面快捷方式
 ```
 
 ---
 
-## API 速查
+## API 速查（后端 REST API）
 
-### 浏览器管理 (`utils/browser.js`)
+所有 API 端点由 `backend/main.cjs` 提供，前端通过 `http://localhost:3000/api/*` 访问。
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/api/tasks` | 获取可用任务列表 |
+| GET | `/api/scheduled-tasks` | 获取定时任务列表 |
+| POST | `/api/scheduled-tasks` | 添加定时任务 |
+| PUT | `/api/scheduled-tasks/:id` | 更新定时任务 |
+| DELETE | `/api/scheduled-tasks/:id` | 删除定时任务 |
+| POST | `/api/tasks/run` | 立即运行指定任务 |
+| POST | `/api/tasks/toggle/:id` | 切换任务启用状态 |
+| GET | `/api/logs` | 获取任务运行日志 |
+| DELETE | `/api/logs` | 清空日志 |
+| GET | `/events` | SSE 实时日志推送 |
+
+### 浏览器管理 (`backend/utils/browser.js`)
 
 | 方法 | 说明 |
 |------|------|
@@ -199,7 +206,7 @@ xianyu_master/
 | `closePage()` | 关闭当前页面 |
 | `recreateContext()` | 重建浏览器上下文 |
 
-### 店铺数据 (`modules/shop_data/shop_data.js`)
+### 店铺数据 (`backend/modules/shop_data/shop_data.js`)
 
 | 方法 | 说明 |
 |------|------|
@@ -218,6 +225,7 @@ xianyu_master/
 
 | 变量 | 说明 | 默认值 |
 |------|------|--------|
+| `PORT` | 后端服务端口 | `3000` |
 | `PLAYWRIGHT_HEADED` | 是否显示浏览器窗口 | `true` |
 | `STORAGE_STATE_PATH` | 登录态 JSON 存储路径 | `.data/storage-state.json` |
 
@@ -225,16 +233,19 @@ xianyu_master/
 
 ## 开发计划
 
-目前项目正在进行 **架构转型**，详细开发路线请参考：`docs/roadmap.md`
+目前项目已完成 **架构转型**，详细开发路线请参考：`docs/roadmap.md`
 
-### 近期目标
-
+### 已完成
 1. ✅ 废弃 Electron 桌面壳层
-2. 🔄 搭建 Next.js 全栈应用 (App Router + API Routes)
-3. 📝 开发 React 前端管理界面 (shadcn/ui + Tailwind CSS)
-4. 🔄 实现 API Routes 统一管理任务
-5. 📝 添加 SSE 实时日志推送
-6. 📝 优化数据可视化报表 (Recharts)
+2. ✅ 前后端代码完全分离（`frontend/` + `backend/`）
+3. ✅ REST API 统一管理任务
+4. ✅ SSE 实时日志推送
+5. ✅ 定时任务管理
+
+### 进行中
+1. 🔄 优化前端管理界面 (HeroUI 风格)
+2. 📝 丰富数据可视化报表
+3. 📝 完善错误处理和日志系统
 
 ---
 

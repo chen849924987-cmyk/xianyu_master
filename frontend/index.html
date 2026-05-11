@@ -12,20 +12,16 @@
            1. Design Tokens (oklch)
            ============================== */
         :root {
-            /* === 基础色 === */
             --white: oklch(100% 0 0);
             --black: oklch(0% 0 0);
             --snow: oklch(0.9911 0 0);
             --eclipse: oklch(0.2103 0.0059 285.89);
-
-            /* === 语义色 === */
             --background: oklch(0.9702 0 0);
             --foreground: oklch(0.2103 0.0059 285.89);
             --accent: oklch(0.6204 0.195 253.83);
             --accent-hover: oklch(0.55 0.195 253.83);
             --accent-foreground: oklch(100% 0 0);
             --accent-soft: oklch(0.9 0.06 253.83 / 0.3);
-
             --success: oklch(0.7329 0.1935 150.81);
             --success-foreground: oklch(0.2103 0.0059 285.89);
             --success-soft: oklch(0.9 0.08 150.81 / 0.3);
@@ -35,18 +31,13 @@
             --danger: oklch(0.6532 0.2328 25.74);
             --danger-foreground: oklch(100% 0 0);
             --danger-soft: oklch(0.9 0.08 25.74 / 0.3);
-
             --muted: oklch(0.5517 0.0138 285.94);
             --border: oklch(90% 0.004 286.32);
             --separator: oklch(92% 0.004 286.32);
-
-            /* === 表面层级 === */
             --surface: oklch(100% 0 0);
             --surface-secondary: oklch(0.9524 0.0013 286.37);
             --surface-tertiary: oklch(0.9373 0.0013 286.37);
             --overlay: oklch(100% 0 0);
-
-            /* === 间距（4px 基准）=== */
             --spacing: 0.25rem;
             --space-1: 0.25rem;
             --space-2: 0.5rem;
@@ -56,40 +47,23 @@
             --space-6: 1.5rem;
             --space-8: 2rem;
             --space-10: 2.5rem;
-
-            /* === 圆角 === */
             --radius: 0.5rem;
             --radius-lg: 0.75rem;
             --radius-xl: 1rem;
             --radius-2xl: 1.25rem;
             --radius-3xl: 1.5rem;
             --field-radius: calc(var(--radius) * 1.5);
-
-            /* === 阴影 === */
             --surface-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 0 1px 0 rgba(0, 0, 0, 0.06);
             --overlay-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06), 0 -6px 12px 0 rgba(0, 0, 0, 0.03), 0 14px 28px 0 rgba(0, 0, 0, 0.08);
             --field-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 0 1px 0 rgba(0, 0, 0, 0.06);
-
-            /* === 字体 === */
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
             --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', 'Monaco', 'Courier New', monospace;
-
-            /* === 缓动 === */
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
             --ease-out: cubic-bezier(0, 0, 0.2, 1);
             --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
             --ease-out-fluid: cubic-bezier(0.33, 1, 0.68, 1);
         }
-
-        /* ==============================
-           2. Reset & Base
-           ============================== */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: var(--font-sans);
             background: var(--background);
@@ -99,20 +73,10 @@
             font-size: 14px;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
+        .app-container { display: flex; height: 100vh; }
 
-        /* ==============================
-           3. App Layout
-           ============================== */
-        .app-container {
-            display: flex;
-            height: 100vh;
-        }
-
-        /* ==============================
-           4. Sidebar (HeroUI Dark Style)
-           ============================== */
+        /* Sidebar */
         .sidebar {
             width: 240px;
             background: var(--eclipse);
@@ -122,12 +86,7 @@
             flex-shrink: 0;
             user-select: none;
         }
-
-        .sidebar-header {
-            padding: 20px 20px 16px;
-            border-bottom: 1px solid oklch(100% 0 0 / 0.08);
-        }
-
+        .sidebar-header { padding: 20px 20px 16px; border-bottom: 1px solid oklch(100% 0 0 / 0.08); }
         .sidebar-header .logo {
             display: flex;
             align-items: center;
@@ -136,31 +95,20 @@
             font-weight: 700;
             letter-spacing: -0.02em;
         }
-
         .sidebar-header .logo-badge {
             background: var(--accent);
             font-size: 11px;
             padding: 2px 8px;
             border-radius: 10px;
             font-weight: 500;
-            letter-spacing: 0;
         }
-
         .sidebar-header .subtitle {
             font-size: 12px;
             color: oklch(100% 0 0 / 0.45);
             margin-top: 4px;
             font-weight: 400;
         }
-
-        .nav-list {
-            padding: 12px 8px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
+        .nav-list { padding: 12px 8px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
         .nav-item {
             display: flex;
             align-items: center;
@@ -173,27 +121,10 @@
             color: oklch(100% 0 0 / 0.55);
             font-size: 14px;
             font-weight: 500;
-            position: relative;
         }
-
-        .nav-item:hover {
-            background: oklch(100% 0 0 / 0.05);
-            color: white;
-        }
-
-        .nav-item.active {
-            background: oklch(100% 0 0 / 0.08);
-            border-left-color: var(--accent);
-            color: white;
-        }
-
-        .nav-item .icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
+        .nav-item:hover { background: oklch(100% 0 0 / 0.05); color: white; }
+        .nav-item.active { background: oklch(100% 0 0 / 0.08); border-left-color: var(--accent); color: white; }
+        .nav-item .icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
         .sidebar-footer {
             padding: 16px 20px;
             border-top: 1px solid oklch(100% 0 0 / 0.08);
@@ -203,17 +134,8 @@
             text-align: center;
         }
 
-        /* ==============================
-           5. Main Content Area
-           ============================== */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* Top Bar */
+        /* Main */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .top-bar {
             padding: 16px 24px;
             background: var(--surface);
@@ -223,28 +145,11 @@
             align-items: center;
             flex-shrink: 0;
         }
+        .top-bar h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+        .top-bar .actions { display: flex; gap: var(--space-2); }
+        .page-content { flex: 1; padding: 24px; overflow-y: auto; }
 
-        .top-bar h2 {
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-        }
-
-        .top-bar .actions {
-            display: flex;
-            gap: var(--space-2);
-        }
-
-        /* Page Content */
-        .page-content {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-        }
-
-        /* ==============================
-           6. Card Component (HeroUI)
-           ============================== */
+        /* Card */
         .card {
             background: var(--surface);
             border-radius: min(32px, var(--radius-3xl));
@@ -252,7 +157,6 @@
             margin-bottom: 20px;
             overflow: hidden;
         }
-
         .card-header {
             padding: 16px 20px;
             border-bottom: 1px solid var(--border);
@@ -260,27 +164,12 @@
             justify-content: space-between;
             align-items: center;
         }
+        .card-header h3 { font-size: 16px; font-weight: 600; }
+        .card-body { padding: var(--space-4); }
+        .card--secondary { background: var(--surface-secondary); }
+        .card--tertiary { background: var(--surface-tertiary); }
 
-        .card-header h3 {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .card-body {
-            padding: var(--space-4);
-        }
-
-        .card--secondary {
-            background: var(--surface-secondary);
-        }
-
-        .card--tertiary {
-            background: var(--surface-tertiary);
-        }
-
-        /* ==============================
-           7. Button (HeroUI Pill Style)
-           ============================== */
+        /* Button */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -298,101 +187,32 @@
             white-space: nowrap;
             outline: none;
         }
-
-        .btn:focus-visible {
-            box-shadow: 0 0 0 2px var(--accent), 0 0 0 4px white;
-        }
-
-        .btn:active {
-            transform: scale(0.97);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: var(--accent-foreground);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: var(--success-foreground);
-        }
-
-        .btn-success:hover {
-            background: oklch(0.65 0.1935 150.81);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: var(--danger-foreground);
-        }
-
-        .btn-danger:hover {
-            background: oklch(0.55 0.2328 25.74);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--foreground);
-        }
-
-        .btn-ghost:hover {
-            background: var(--surface-secondary);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--foreground);
-        }
-
-        .btn-outline:hover {
-            background: var(--surface-secondary);
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 13px;
-            height: 36px;
-        }
+        .btn:focus-visible { box-shadow: 0 0 0 2px var(--accent), 0 0 0 4px white; }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+        .btn-primary { background: var(--accent); color: var(--accent-foreground); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-success { background: var(--success); color: var(--success-foreground); }
+        .btn-success:hover { background: oklch(0.65 0.1935 150.81); }
+        .btn-danger { background: var(--danger); color: var(--danger-foreground); }
+        .btn-danger:hover { background: oklch(0.55 0.2328 25.74); }
+        .btn-ghost { background: transparent; color: var(--foreground); }
+        .btn-ghost:hover { background: var(--surface-secondary); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--foreground); }
+        .btn-outline:hover { background: var(--surface-secondary); }
+        .btn-sm { padding: 6px 12px; font-size: 13px; height: 36px; }
 
         .btn-icon {
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            border-radius: var(--radius-3xl);
-            color: var(--muted);
-            font-size: 18px;
+            width: 40px; height: 40px; padding: 0;
+            background: transparent; border: none; cursor: pointer;
+            border-radius: var(--radius-3xl); color: var(--muted); font-size: 18px;
             transition: background-color 100ms var(--ease-out);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-flex; align-items: center; justify-content: center;
         }
+        .btn-icon:hover { background: var(--surface-secondary); color: var(--foreground); }
+        .btn-icon:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
 
-        .btn-icon:hover {
-            background: var(--surface-secondary);
-            color: var(--foreground);
-        }
-
-        .btn-icon:focus-visible {
-            box-shadow: 0 0 0 2px var(--accent);
-        }
-
-        /* ==============================
-           8. Task Card
-           ============================== */
+        /* Task Card */
         .task-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -401,57 +221,20 @@
             transition: all 200ms var(--ease-smooth);
             cursor: pointer;
         }
-
         .task-card:hover {
             box-shadow: var(--surface-shadow);
             border-color: var(--accent);
             transform: translateY(-1px);
         }
+        .task-card .task-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .task-card .task-path { font-size: 12px; color: var(--muted); word-break: break-all; font-family: var(--font-mono); }
+        .task-card .task-actions { margin-top: 12px; display: flex; gap: var(--space-2); }
+        .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-3); }
 
-        .task-card .task-name {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .task-card .task-path {
-            font-size: 12px;
-            color: var(--muted);
-            word-break: break-all;
-            font-family: var(--font-mono);
-        }
-
-        .task-card .task-actions {
-            margin-top: 12px;
-            display: flex;
-            gap: var(--space-2);
-        }
-
-        .task-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: var(--space-3);
-        }
-
-        /* ==============================
-           9. Form Controls (HeroUI)
-           ============================== */
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 6px;
-            color: var(--foreground);
-        }
-
-        .form-group label .required {
-            color: var(--danger);
-        }
-
+        /* Form */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--foreground); }
+        .form-group label .required { color: var(--danger); }
         .form-control {
             width: 100%;
             padding: 8px 12px;
@@ -465,46 +248,14 @@
             color: var(--foreground);
             outline: none;
         }
-
-        .form-control::placeholder {
-            color: var(--muted);
-        }
-
-        .form-control:hover {
-            background: var(--surface-secondary);
-        }
-
-        .form-control:focus {
-            box-shadow: 0 0 0 2px var(--accent);
-            background: var(--surface);
-        }
-
-        .form-control:invalid:not(:focus) {
-            outline: 1px solid var(--danger);
-        }
-
-        .form-control:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        select.form-control {
-            appearance: auto;
-        }
-
-        .form-help {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 4px;
-        }
-
-        .cron-presets {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-
+        .form-control::placeholder { color: var(--muted); }
+        .form-control:hover { background: var(--surface-secondary); }
+        .form-control:focus { box-shadow: 0 0 0 2px var(--accent); background: var(--surface); }
+        .form-control:invalid:not(:focus) { outline: 1px solid var(--danger); }
+        .form-control:disabled { opacity: 0.5; cursor: not-allowed; }
+        select.form-control { appearance: auto; }
+        .form-help { font-size: 12px; color: var(--muted); margin-top: 4px; }
+        .cron-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
         .cron-preset {
             padding: 4px 10px;
             border: 1px solid var(--border);
@@ -517,459 +268,154 @@
             font-weight: 500;
             font-family: var(--font-sans);
         }
+        .cron-preset:hover { border-color: var(--accent); color: var(--accent); }
+        .cron-preset.active { background: var(--accent); color: var(--accent-foreground); border-color: var(--accent); }
 
-        .cron-preset:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .cron-preset.active {
-            background: var(--accent);
-            color: var(--accent-foreground);
-            border-color: var(--accent);
-        }
-
-        /* ==============================
-           10. Badge (HeroUI)
-           ============================== */
+        /* Badge */
         .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            border-radius: var(--radius);
-            font-size: 12px;
-            font-weight: 500;
-            line-height: 1.3;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 8px; border-radius: var(--radius);
+            font-size: 12px; font-weight: 500; line-height: 1.3;
         }
+        .badge .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .badge-success { background: var(--success-soft); color: var(--success-foreground); }
+        .badge-success .dot { background: var(--success); }
+        .badge-danger { background: var(--danger-soft); color: var(--danger); }
+        .badge-danger .dot { background: var(--danger); }
+        .badge-warning { background: var(--warning-soft); color: var(--warning-foreground); }
+        .badge-warning .dot { background: var(--warning); }
+        .badge-neutral { background: var(--surface-secondary); color: var(--foreground); }
+        .badge-neutral .dot { background: var(--muted); }
 
-        .badge .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .badge-success {
-            background: var(--success-soft);
-            color: var(--success-foreground);
-        }
-
-        .badge-success .dot {
-            background: var(--success);
-        }
-
-        .badge-danger {
-            background: var(--danger-soft);
-            color: var(--danger);
-        }
-
-        .badge-danger .dot {
-            background: var(--danger);
-        }
-
-        .badge-warning {
-            background: var(--warning-soft);
-            color: var(--warning-foreground);
-        }
-
-        .badge-warning .dot {
-            background: var(--warning);
-        }
-
-        .badge-neutral {
-            background: var(--surface-secondary);
-            color: var(--foreground);
-        }
-
-        .badge-neutral .dot {
-            background: var(--muted);
-        }
-
-        /* ==============================
-           11. Toggle Switch
-           ============================== */
-        .toggle {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 22px;
-            flex-shrink: 0;
-        }
-
-        .toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
+        /* Toggle */
+        .toggle { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
         .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-color: oklch(0.8 0.01 286);
             transition: 300ms var(--ease-smooth);
             border-radius: 22px;
         }
-
         .toggle-slider::before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
+            position: absolute; content: "";
+            height: 16px; width: 16px;
+            left: 3px; bottom: 3px;
             background-color: white;
             transition: 300ms var(--ease-smooth);
             border-radius: 50%;
         }
+        .toggle input:checked + .toggle-slider { background-color: var(--success); }
+        .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
 
-        .toggle input:checked + .toggle-slider {
-            background-color: var(--success);
-        }
-
-        .toggle input:checked + .toggle-slider::before {
-            transform: translateX(18px);
-        }
-
-        /* ==============================
-           12. Table (HeroUI)
-           ============================== */
-        .task-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
+        /* Table */
+        .task-table { width: 100%; border-collapse: collapse; }
         .task-table thead th {
-            text-align: left;
-            padding: 12px;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: var(--muted);
-            font-weight: 600;
+            text-align: left; padding: 12px;
+            font-size: 12px; text-transform: uppercase;
+            color: var(--muted); font-weight: 600;
             border-bottom: 2px solid var(--border);
             letter-spacing: 0.03em;
         }
-
         .task-table tbody td {
-            padding: 12px;
-            font-size: 14px;
+            padding: 12px; font-size: 14px;
             border-bottom: 1px solid var(--separator);
         }
+        .task-table tbody tr:hover td { background: var(--surface-secondary); }
+        .task-table code { font-family: var(--font-mono); font-size: 13px; background: var(--surface-secondary); padding: 2px 6px; border-radius: 4px; }
 
-        .task-table tbody tr:hover td {
-            background: var(--surface-secondary);
-        }
-
-        .task-table code {
-            font-family: var(--font-mono);
-            font-size: 13px;
-            background: var(--surface-secondary);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* ==============================
-           13. Log Console (Dark Terminal)
-           ============================== */
+        /* Log Console */
         .log-container {
-            background: #1a1b26;
-            border-radius: var(--radius);
-            padding: 16px;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            line-height: 1.6;
-            max-height: 400px;
-            overflow-y: auto;
-            color: #a9b1d6;
+            background: #1a1b26; border-radius: var(--radius);
+            padding: 16px; font-family: var(--font-mono);
+            font-size: 13px; line-height: 1.6;
+            max-height: 400px; overflow-y: auto; color: #a9b1d6;
         }
+        .log-container .log-time { color: #565f89; }
+        .log-container .log-info { color: #7dcfff; }
+        .log-container .log-success { color: #9ece6a; }
+        .log-container .log-error { color: #f7768e; }
+        .log-container .log-warning { color: #e0af68; }
+        .log-entry { white-space: pre-wrap; word-break: break-all; }
 
-        .log-container .log-time {
-            color: #565f89;
-        }
-
-        .log-container .log-info {
-            color: #7dcfff;
-        }
-
-        .log-container .log-success {
-            color: #9ece6a;
-        }
-
-        .log-container .log-error {
-            color: #f7768e;
-        }
-
-        .log-container .log-warning {
-            color: #e0af68;
-        }
-
-        .log-entry {
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-
-        /* ==============================
-           14. Modal (HeroUI)
-           ============================== */
+        /* Modal */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.5); z-index: 1000;
+            justify-content: center; align-items: center;
             backdrop-filter: blur(4px);
             animation: fadeIn 150ms var(--ease-out);
         }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
+        .modal-overlay.show { display: flex; }
         .modal {
             background: var(--overlay);
             border-radius: min(32px, var(--radius-3xl));
-            width: 520px;
-            max-width: 90vw;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: var(--overlay-shadow);
+            width: 520px; max-width: 90vw; max-height: 85vh;
+            overflow-y: auto; box-shadow: var(--overlay-shadow);
             animation: zoomIn 250ms var(--ease-out-quad);
         }
-
         .modal-header {
-            padding: 24px 24px 16px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 24px 24px 16px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .modal-header h3 {
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .modal-body {
-            padding: 24px;
-        }
-
-        .modal-body p {
-            font-size: 14px;
-            color: var(--muted);
-            line-height: 1.43;
-        }
-
+        .modal-header h3 { font-size: 16px; font-weight: 500; }
+        .modal-body { padding: 24px; }
+        .modal-body p { font-size: 14px; color: var(--muted); line-height: 1.43; }
         .modal-footer {
-            padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: flex-end;
-            gap: var(--space-2);
+            padding: 16px 24px; border-top: 1px solid var(--border);
+            display: flex; justify-content: flex-end; gap: var(--space-2);
         }
 
-        /* ==============================
-           15. Statistics Card
-           ============================== */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
+        /* Stats */
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
         .stat-card {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            box-shadow: var(--surface-shadow);
-            text-align: center;
+            background: var(--surface); border-radius: var(--radius-lg);
+            padding: 20px; box-shadow: var(--surface-shadow); text-align: center;
         }
+        .stat-card .stat-value { font-size: 28px; font-weight: 700; color: var(--accent); }
+        .stat-card .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
-        .stat-card .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--accent);
-        }
+        /* Empty State */
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+        .empty-state .icon-big { font-size: 48px; margin-bottom: 12px; display: block; }
+        .empty-state p { font-size: 14px; }
 
-        .stat-card .stat-label {
-            font-size: 13px;
-            color: var(--muted);
-            margin-top: 4px;
-        }
-
-        /* ==============================
-           16. Empty State
-           ============================== */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--muted);
-        }
-
-        .empty-state .icon-big {
-            font-size: 48px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .empty-state p {
-            font-size: 14px;
-        }
-
-        /* ==============================
-           17. Toast Notification
-           ============================== */
+        /* Toast */
         .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            pointer-events: none;
+            position: fixed; top: 20px; right: 20px; z-index: 2000;
+            display: flex; flex-direction: column; gap: 8px; pointer-events: none;
         }
-
         .toast {
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
+            padding: 12px 20px; border-radius: var(--radius);
+            color: white; font-size: 14px; font-weight: 500;
             box-shadow: var(--overlay-shadow);
             animation: slideInRight 300ms var(--ease-out);
-            max-width: 360px;
-            pointer-events: auto;
+            max-width: 360px; pointer-events: auto;
         }
+        .toast-success { background: var(--success); color: var(--success-foreground); }
+        .toast-error { background: var(--danger); }
+        .toast-info { background: var(--accent); }
 
-        .toast-success {
-            background: var(--success);
-            color: var(--success-foreground);
-        }
-
-        .toast-error {
-            background: var(--danger);
-        }
-
-        .toast-info {
-            background: var(--accent);
-        }
-
-        /* ==============================
-           18. Spinner
-           ============================== */
         .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+            border-top-color: white; animation: spin 0.6s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* ==============================
-           19. Tab Panels
-           ============================== */
-        .tab-panel {
-            display: none;
-        }
-
-        .tab-panel.active {
-            display: block;
-            animation: fadeIn 150ms var(--ease-out);
-        }
-
-        /* ==============================
-           20. Animations
-           ============================== */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .status-running {
-            animation: pulse 1.5s var(--ease-smooth) infinite;
-            color: var(--accent);
-        }
-
-        /* ==============================
-           21. Accessibility - Reduced Motion
-           ============================== */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                transition: none !important;
-                animation: none !important;
-            }
-        }
-
-        /* Focus ring */
-        :focus-visible {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--accent);
-        }
-
-        /* ==============================
-           22. Scrollbar
-           ============================== */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--muted);
-        }
-
-        /* ==============================
-           23. Utilities
-           ============================== */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 150ms var(--ease-out); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .status-running { animation: pulse 1.5s var(--ease-smooth) infinite; color: var(--accent); }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+        :focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
         .flex { display: flex; }
         .flex-1 { flex: 1; }
         .items-center { align-items: center; }
@@ -1016,13 +462,12 @@
                 </div>
             </nav>
             <div class="sidebar-footer">
-                闲鱼自动化助手 v2.0 · Electron
+                闲鱼自动化助手 v2.0 · 本地服务
             </div>
         </aside>
 
-        <!-- ======== Main Content ======== -->
+        <!-- ======== Main ======== -->
         <main class="main-content">
-            <!-- Top Bar -->
             <div class="top-bar">
                 <h2 id="pageTitle">📊 控制台</h2>
                 <div class="actions">
@@ -1031,9 +476,8 @@
                 </div>
             </div>
 
-            <!-- Page Content -->
             <div class="page-content">
-                <!-- Dashboard Tab -->
+                <!-- Dashboard -->
                 <div id="panel-dashboard" class="tab-panel active">
                     <div class="stats-row">
                         <div class="stat-card">
@@ -1092,7 +536,7 @@
                     </div>
                 </div>
 
-                <!-- Tasks Tab -->
+                <!-- Tasks -->
                 <div id="panel-tasks" class="tab-panel">
                     <div class="card">
                         <div class="card-header">
@@ -1110,7 +554,7 @@
                     </div>
                 </div>
 
-                <!-- Schedule Tab -->
+                <!-- Schedule -->
                 <div id="panel-schedule" class="tab-panel">
                     <div class="card">
                         <div class="card-header">
@@ -1137,7 +581,7 @@
                     </div>
                 </div>
 
-                <!-- Logs Tab -->
+                <!-- Logs -->
                 <div id="panel-logs" class="tab-panel">
                     <div class="card">
                         <div class="card-header">
@@ -1161,7 +605,7 @@
         </main>
     </div>
 
-    <!-- ======== Add/Edit Task Modal ======== -->
+    <!-- Modal -->
     <div id="taskModal" class="modal-overlay">
         <div class="modal">
             <div class="modal-header">
@@ -1190,9 +634,7 @@
                         <button class="cron-preset" data-cron="0 0 * * *" onclick="selectPreset(this)">每天午夜</button>
                     </div>
                     <input id="cronExpression" class="form-control" placeholder="Cron 表达式，例如：0 9 * * *" />
-                    <div class="form-help">
-                        Cron 格式: 分 时 日 月 周 (例如: 0 9 * * * 表示每天9点)
-                    </div>
+                    <div class="form-help">Cron 格式: 分 时 日 月 周 (例如: 0 9 * * * 表示每天9点)</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1202,71 +644,67 @@
         </div>
     </div>
 
-    <!-- ======== Toast Container ======== -->
+    <!-- Toast -->
     <div id="toastContainer" class="toast-container"></div>
 
-    <!-- ======== JavaScript ======== -->
     <script>
-        // ========== App State ==========
+        // ========== API 基础地址 ==========
+        const API_BASE = 'http://localhost:3000';
+
+        // ========== 状态 ==========
         let availableTasks = [];
         let scheduledTasks = [];
         let taskLogs = [];
         let currentEditTaskId = null;
 
-        // ========== Tab Switching ==========
-        function switchTab(tab) {
-            document.querySelectorAll('.nav-item').forEach(function(el) {
-                el.classList.remove('active');
+        // ========== API 请求封装 ==========
+        async function api(url, options = {}) {
+            const resp = await fetch(API_BASE + url, {
+                headers: { 'Content-Type': 'application/json' },
+                ...options
             });
-            document.querySelectorAll('.tab-panel').forEach(function(el) {
-                el.classList.remove('active');
-            });
+            const json = await resp.json();
+            if (!json.success) throw new Error(json.error || '请求失败');
+            return json.data;
+        }
 
-            var navMap = { dashboard: 0, tasks: 1, schedule: 2, logs: 3 };
+        // ========== Tab 切换 ==========
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+            const navMap = { dashboard: 0, tasks: 1, schedule: 2, logs: 3 };
             document.querySelectorAll('.nav-item')[navMap[tab]].classList.add('active');
             document.getElementById('panel-' + tab).classList.add('active');
-
-            var titles = {
-                dashboard: '📊 控制台',
-                tasks: '📋 任务列表',
-                schedule: '⏰ 定时任务',
-                logs: '📜 运行日志'
-            };
+            const titles = { dashboard: '📊 控制台', tasks: '📋 任务列表', schedule: '⏰ 定时任务', logs: '📜 运行日志' };
             document.getElementById('pageTitle').textContent = titles[tab];
         }
 
-        // ========== Data Loading ==========
+        // ========== 数据加载 ==========
         async function loadAvailableTasks() {
             try {
-                availableTasks = await window.electronAPI.getAvailableTasks();
+                availableTasks = await api('/api/tasks');
                 renderQuickTasks();
                 renderAllTasks();
                 populateTaskSelect();
                 document.getElementById('taskCount').textContent = availableTasks.length;
-            } catch (e) {
-                console.error('加载任务失败:', e);
-            }
+            } catch (e) { console.error('加载任务失败:', e); }
         }
 
         async function loadScheduledTasks() {
             try {
-                scheduledTasks = await window.electronAPI.getScheduledTasks();
+                scheduledTasks = await api('/api/scheduled-tasks');
                 renderScheduleTable();
                 renderDashboardSchedule();
                 updateStats();
-            } catch (e) {
-                console.error('加载定时任务失败:', e);
-            }
+            } catch (e) { console.error('加载定时任务失败:', e); }
         }
 
         async function loadLogs() {
             try {
-                taskLogs = await window.electronAPI.getTaskLogs();
+                taskLogs = await api('/api/logs');
                 renderLogs();
                 updateStats();
-            } catch (e) {
-                console.error('加载日志失败:', e);
-            }
+            } catch (e) { console.error('加载日志失败:', e); }
         }
 
         function refreshData() {
@@ -1276,205 +714,172 @@
             showToast('数据已刷新', 'info');
         }
 
-        // ========== Render Functions ==========
+        // ========== 渲染 ==========
         function renderQuickTasks() {
-            var grid = document.getElementById('quickTaskGrid');
+            const grid = document.getElementById('quickTaskGrid');
             if (!availableTasks.length) {
                 grid.innerHTML = '<div class="empty-state"><span class="icon-big">📦</span><p>暂无可用任务</p></div>';
                 return;
             }
-            grid.innerHTML = availableTasks.slice(0, 8).map(function(task) {
-                return '<div class="task-card" onclick="runTask(\'' + task.path + '\')">' +
-                    '<div class="task-name">' + task.name + '</div>' +
-                    '<div class="task-path">' + task.path + '</div>' +
-                    '<div class="task-actions">' +
-                    '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();runTask(\'' + task.path + '\')">▶ 运行</button>' +
-                    '<button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openScheduleFromTask(\'' + task.name + '\', \'' + task.path + '\')">⏰ 定时</button>' +
-                    '</div></div>';
-            }).join('');
+            grid.innerHTML = availableTasks.slice(0, 8).map(t => `
+                <div class="task-card" onclick="runTask('${t.path}')">
+                    <div class="task-name">${t.name}</div>
+                    <div class="task-path">${t.path}</div>
+                    <div class="task-actions">
+                        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();runTask('${t.path}')">▶ 运行</button>
+                        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openScheduleFromTask('${t.name}', '${t.path}')">⏰ 定时</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function renderAllTasks() {
-            var grid = document.getElementById('allTaskGrid');
+            const grid = document.getElementById('allTaskGrid');
             if (!availableTasks.length) {
                 grid.innerHTML = '<div class="empty-state"><span class="icon-big">📦</span><p>暂无可用任务</p></div>';
                 return;
             }
-            grid.innerHTML = availableTasks.map(function(task) {
-                return '<div class="task-card">' +
-                    '<div class="task-name">' + task.name + '</div>' +
-                    '<div class="task-path">' + task.path + '</div>' +
-                    '<div class="task-actions">' +
-                    '<button class="btn btn-primary btn-sm" onclick="runTask(\'' + task.path + '\')">▶ 立即运行</button>' +
-                    '<button class="btn btn-outline btn-sm" onclick="openScheduleFromTask(\'' + task.name + '\', \'' + task.path + '\')">⏰ 定时</button>' +
-                    '</div></div>';
-            }).join('');
+            grid.innerHTML = availableTasks.map(t => `
+                <div class="task-card">
+                    <div class="task-name">${t.name}</div>
+                    <div class="task-path">${t.path}</div>
+                    <div class="task-actions">
+                        <button class="btn btn-primary btn-sm" onclick="runTask('${t.path}')">▶ 立即运行</button>
+                        <button class="btn btn-outline btn-sm" onclick="openScheduleFromTask('${t.name}', '${t.path}')">⏰ 定时</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function renderScheduleTable() {
-            var tbody = document.getElementById('scheduleTable');
+            const tbody = document.getElementById('scheduleTable');
             if (!scheduledTasks.length) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px;">暂无定时任务，点击上方按钮创建</td></tr>';
                 return;
             }
-            tbody.innerHTML = scheduledTasks.map(function(task) {
-                return '<tr>' +
-                    '<td><label class="toggle"><input type="checkbox" ' + (task.enabled ? 'checked' : '') + ' onchange="toggleTask(\'' + task.id + '\')"><span class="toggle-slider"></span></label></td>' +
-                    '<td><strong>' + task.name + '</strong></td>' +
-                    '<td><span class="text-sm text-muted font-mono">' + task.scriptPath + '</span></td>' +
-                    '<td><code>' + task.cronExpression + '</code></td>' +
-                    '<td class="text-sm text-muted">' + (task.lastRun ? formatTime(task.lastRun) : '从未执行') + '</td>' +
-                    '<td><div class="flex gap-2">' +
-                    '<button class="btn btn-outline btn-sm" onclick="runTask(\'' + task.scriptPath + '\')">▶</button>' +
-                    '<button class="btn btn-outline btn-sm" onclick="editTask(\'' + task.id + '\')">✏️</button>' +
-                    '<button class="btn btn-danger btn-sm" onclick="deleteTask(\'' + task.id + '\')">🗑️</button>' +
-                    '</div></td></tr>';
-            }).join('');
+            tbody.innerHTML = scheduledTasks.map(t => `
+                <tr>
+                    <td><label class="toggle"><input type="checkbox" ${t.enabled ? 'checked' : ''} onchange="toggleTask('${t.id}')"><span class="toggle-slider"></span></label></td>
+                    <td><strong>${t.name}</strong></td>
+                    <td><span class="text-sm text-muted font-mono">${t.scriptPath}</span></td>
+                    <td><code>${t.cronExpression}</code></td>
+                    <td class="text-sm text-muted">${t.lastRun ? formatTime(t.lastRun) : '从未执行'}</td>
+                    <td><div class="flex gap-2">
+                        <button class="btn btn-outline btn-sm" onclick="runTask('${t.scriptPath}')">▶</button>
+                        <button class="btn btn-outline btn-sm" onclick="editTask('${t.id}')">✏️</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTask('${t.id}')">🗑️</button>
+                    </div></td>
+                </tr>
+            `).join('');
         }
 
         function renderDashboardSchedule() {
-            var tbody = document.getElementById('dashboardScheduleTable');
-            var active = scheduledTasks.filter(function(t) { return t.enabled; });
+            const tbody = document.getElementById('dashboardScheduleTable');
+            const active = scheduledTasks.filter(t => t.enabled);
             if (!active.length) {
                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:30px;">暂无活跃的定时任务</td></tr>';
                 return;
             }
-            tbody.innerHTML = active.slice(0, 5).map(function(task) {
-                return '<tr>' +
-                    '<td><strong>' + task.name + '</strong></td>' +
-                    '<td><code>' + task.cronExpression + '</code></td>' +
-                    '<td class="text-sm">' + (task.lastRun ? formatTime(task.lastRun) : '-') + '</td>' +
-                    '<td class="text-sm">' + (task.nextRun ? formatTime(task.nextRun) : '-') + '</td>' +
-                    '<td><span class="badge badge-success"><span class="dot"></span>活跃</span></td>' +
-                    '</tr>';
-            }).join('');
+            tbody.innerHTML = active.slice(0, 5).map(t => `
+                <tr>
+                    <td><strong>${t.name}</strong></td>
+                    <td><code>${t.cronExpression}</code></td>
+                    <td class="text-sm">${t.lastRun ? formatTime(t.lastRun) : '-'}</td>
+                    <td class="text-sm">${t.nextRun ? formatTime(t.nextRun) : '-'}</td>
+                    <td><span class="badge badge-success"><span class="dot"></span>活跃</span></td>
+                </tr>
+            `).join('');
         }
 
         function renderLogs() {
-            var container = document.getElementById('logContent');
+            const container = document.getElementById('logContent');
             if (!taskLogs.length) {
                 container.innerHTML = '<div class="log-entry"><span class="log-time">[系统]</span><span class="log-info"> 暂无日志记录</span></div>';
                 return;
             }
-            container.innerHTML = taskLogs.map(function(log) {
-                var time = formatTime(log.startTime);
-                var statusHtml = '';
+            container.innerHTML = taskLogs.map(log => {
+                const time = formatTime(log.startTime);
+                let statusHtml = '';
                 if (log.status === 'running') statusHtml = '<span class="log-warning">运行中</span>';
                 else if (log.status === 'success') statusHtml = '<span class="log-success">✓ 成功</span>';
                 else if (log.status === 'failed') statusHtml = '<span class="log-error">✗ 失败</span>';
                 else statusHtml = log.status;
-
-                var outputSnippet = log.output ? '<br><span style="padding-left:20px;font-size:12px;color:#565f89;">' + log.output.slice(0, 200) + '</span>' : '';
+                const snippet = log.output ? '<br><span style="padding-left:20px;font-size:12px;color:#565f89;">' + log.output.slice(0, 200) + '</span>' : '';
                 return '<div class="log-entry">' +
                     '<span class="log-time">[' + time + ']</span> ' +
                     '<span>' + log.scriptPath + '</span> → ' + statusHtml +
-                    outputSnippet +
-                    '</div>';
+                    snippet + '</div>';
             }).join('');
         }
 
         function updateStats() {
-            var totalTasks = availableTasks.length;
-            var scheduledCount = scheduledTasks.filter(function(t) { return t.enabled; }).length;
-            var todayLogs = taskLogs.filter(function(l) {
-                var today = new Date().toDateString();
-                return new Date(l.startTime).toDateString() === today;
-            }).length;
-
-            document.getElementById('stat-total').textContent = totalTasks;
+            const scheduledCount = scheduledTasks.filter(t => t.enabled).length;
+            const todayLogs = taskLogs.filter(l => new Date(l.startTime).toDateString() === new Date().toDateString()).length;
+            document.getElementById('stat-total').textContent = availableTasks.length;
             document.getElementById('stat-scheduled').textContent = scheduledCount;
-            document.getElementById('stat-running').textContent = scheduledTasks.filter(function(t) { return t.enabled; }).length;
+            document.getElementById('stat-running').textContent = scheduledTasks.filter(t => t.enabled).length;
             document.getElementById('stat-logs').textContent = todayLogs;
         }
 
         function populateTaskSelect() {
-            var select = document.getElementById('taskSelect');
-            var options = '<option value="">请选择要定时执行的任务...</option>';
-            options += availableTasks.map(function(t) {
-                return '<option value="' + t.path + '">' + t.name + ' (' + t.path + ')</option>';
-            }).join('');
-            select.innerHTML = options;
+            document.getElementById('taskSelect').innerHTML =
+                '<option value="">请选择要定时执行的任务...</option>' +
+                availableTasks.map(t => '<option value="' + t.path + '">' + t.name + ' (' + t.path + ')</option>').join('');
         }
 
         function formatTime(isoStr) {
-            try {
-                var d = new Date(isoStr);
-                return d.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-            } catch (e) {
-                return isoStr;
-            }
+            try { return new Date(isoStr).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+            catch (e) { return isoStr; }
         }
 
-        // ========== Task Actions ==========
+        // ========== 任务操作 ==========
         async function runTask(scriptPath) {
-            var btn = event && event.target;
-            if (btn && btn.tagName === 'BUTTON') {
-                btn.innerHTML = '<span class="spinner"></span>';
-                btn.disabled = true;
-            }
-
+            const btn = event && event.target;
+            if (btn && btn.tagName === 'BUTTON') { btn.innerHTML = '<span class="spinner"></span>'; btn.disabled = true; }
             try {
-                var result = await window.electronAPI.runScript(scriptPath);
-                var statusText = result.status === 'success' ? '✅ 执行成功' : '❌ 执行失败';
-                showToast(scriptPath.split('/').pop() + ' ' + statusText, result.status === 'success' ? 'success' : 'error');
+                const result = await api('/api/tasks/run', { method: 'POST', body: JSON.stringify({ scriptPath }) });
+                showToast(scriptPath.split('/').pop() + ' ' + (result.status === 'success' ? '✅ 执行成功' : '❌ 执行失败'), result.status === 'success' ? 'success' : 'error');
                 loadLogs();
-            } catch (e) {
-                showToast('执行失败: ' + e.message, 'error');
-            } finally {
-                if (btn && btn.tagName === 'BUTTON') {
-                    btn.innerHTML = '▶ 运行';
-                    btn.disabled = false;
-                }
-            }
+            } catch (e) { showToast('执行失败: ' + e.message, 'error'); }
+            finally { if (btn && btn.tagName === 'BUTTON') { btn.innerHTML = '▶ 运行'; btn.disabled = false; } }
         }
 
         async function toggleTask(taskId) {
             try {
-                var result = await window.electronAPI.toggleTask(taskId);
-                if (result.success) {
-                    loadScheduledTasks();
-                    showToast('任务状态已更新', 'success');
-                }
-            } catch (e) {
-                showToast('切换失败: ' + e.message, 'error');
-            }
+                await api('/api/tasks/toggle/' + taskId, { method: 'POST' });
+                loadScheduledTasks();
+                showToast('任务状态已更新', 'success');
+            } catch (e) { showToast('切换失败: ' + e.message, 'error'); }
         }
 
         async function deleteTask(taskId) {
             if (!confirm('确定要删除此定时任务吗？')) return;
             try {
-                await window.electronAPI.deleteScheduledTask(taskId);
+                await api('/api/scheduled-tasks/' + taskId, { method: 'DELETE' });
                 loadScheduledTasks();
                 showToast('定时任务已删除', 'success');
-            } catch (e) {
-                showToast('删除失败: ' + e.message, 'error');
-            }
+            } catch (e) { showToast('删除失败: ' + e.message, 'error'); }
         }
 
         async function clearLogs() {
             if (!confirm('确定要清空所有日志吗？')) return;
             try {
-                await window.electronAPI.clearLogs();
+                await api('/api/logs', { method: 'DELETE' });
                 loadLogs();
                 showToast('日志已清空', 'success');
-            } catch (e) {
-                showToast('清空失败: ' + e.message, 'error');
-            }
+            } catch (e) { showToast('清空失败: ' + e.message, 'error'); }
         }
 
-        async function refreshLogs() {
-            await loadLogs();
-            showToast('日志已刷新', 'info');
-        }
+        async function refreshLogs() { await loadLogs(); showToast('日志已刷新', 'info'); }
 
-        // ========== Modal Functions ==========
+        // ========== 模态框 ==========
         function openAddTaskModal() {
             currentEditTaskId = null;
             document.getElementById('modalTitle').textContent = '⏰ 新建定时任务';
             document.getElementById('saveTaskBtn').textContent = '保存任务';
             document.getElementById('taskName').value = '';
             document.getElementById('cronExpression').value = '';
-            document.querySelectorAll('.cron-preset').forEach(function(el) { el.classList.remove('active'); });
+            document.querySelectorAll('.cron-preset').forEach(el => el.classList.remove('active'));
             document.getElementById('taskSelect').value = '';
             document.getElementById('taskModal').classList.add('show');
         }
@@ -1486,14 +891,12 @@
             document.getElementById('taskSelect').value = path;
             document.getElementById('taskName').value = name;
             document.getElementById('cronExpression').value = '0 9 * * *';
-            document.querySelectorAll('.cron-preset').forEach(function(el) { el.classList.remove('active'); });
-            var preset = document.querySelector('[data-cron="0 9 * * *"]');
-            if (preset) preset.classList.add('active');
+            document.querySelectorAll('.cron-preset').forEach(el => { el.classList.toggle('active', el.dataset.cron === '0 9 * * *'); });
             document.getElementById('taskModal').classList.add('show');
         }
 
         function editTask(taskId) {
-            var task = scheduledTasks.find(function(t) { return t.id === taskId; });
+            const task = scheduledTasks.find(t => t.id === taskId);
             if (!task) return;
             currentEditTaskId = taskId;
             document.getElementById('modalTitle').textContent = '✏️ 编辑定时任务';
@@ -1501,94 +904,93 @@
             document.getElementById('taskSelect').value = task.scriptPath;
             document.getElementById('taskName').value = task.name;
             document.getElementById('cronExpression').value = task.cronExpression;
-            document.querySelectorAll('.cron-preset').forEach(function(el) {
-                if (el.dataset.cron === task.cronExpression) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('active');
-                }
-            });
+            document.querySelectorAll('.cron-preset').forEach(el => { el.classList.toggle('active', el.dataset.cron === task.cronExpression); });
             document.getElementById('taskModal').classList.add('show');
         }
 
-        function closeModal() {
-            document.getElementById('taskModal').classList.remove('show');
-        }
+        function closeModal() { document.getElementById('taskModal').classList.remove('show'); }
 
         function selectPreset(el) {
-            document.querySelectorAll('.cron-preset').forEach(function(e) { e.classList.remove('active'); });
+            document.querySelectorAll('.cron-preset').forEach(e => e.classList.remove('active'));
             el.classList.add('active');
             document.getElementById('cronExpression').value = el.dataset.cron;
         }
 
         async function saveTask() {
-            var scriptPath = document.getElementById('taskSelect').value;
-            var name = document.getElementById('taskName').value.trim();
-            var cronExpression = document.getElementById('cronExpression').value.trim();
-
+            const scriptPath = document.getElementById('taskSelect').value;
+            const name = document.getElementById('taskName').value.trim();
+            const cronExpression = document.getElementById('cronExpression').value.trim();
             if (!scriptPath) { showToast('请选择任务脚本', 'error'); return; }
             if (!name) { showToast('请输入任务名称', 'error'); return; }
             if (!cronExpression) { showToast('请输入Cron表达式', 'error'); return; }
-
-            var taskData = { scriptPath: scriptPath, name: name, cronExpression: cronExpression };
-
+            const taskData = { scriptPath, name, cronExpression };
             try {
                 if (currentEditTaskId) {
                     taskData.id = currentEditTaskId;
-                    await window.electronAPI.updateScheduledTask(taskData);
+                    await api('/api/scheduled-tasks/' + currentEditTaskId, { method: 'PUT', body: JSON.stringify(taskData) });
                     showToast('定时任务已更新', 'success');
                 } else {
-                    await window.electronAPI.addScheduledTask(taskData);
+                    await api('/api/scheduled-tasks', { method: 'POST', body: JSON.stringify(taskData) });
                     showToast('定时任务已创建', 'success');
                 }
                 closeModal();
                 loadScheduledTasks();
-            } catch (e) {
-                showToast('保存失败: ' + e.message, 'error');
-            }
+            } catch (e) { showToast('保存失败: ' + e.message, 'error'); }
         }
 
         // ========== Toast ==========
         function showToast(message, type) {
-            if (!type) type = 'info';
-            var container = document.getElementById('toastContainer');
-            var toast = document.createElement('div');
+            type = type || 'info';
+            const toast = document.createElement('div');
             toast.className = 'toast toast-' + type;
             toast.textContent = message;
-            container.appendChild(toast);
-            setTimeout(function() { toast.remove(); }, 3000);
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        // ========== Real-time Updates ==========
-        function setupListeners() {
-            window.electronAPI.onTaskLog(function(data) {
-                // 新任务开始
+        // ========== SSE 实时更新 ==========
+        function connectSSE() {
+            const evtSource = new EventSource(API_BASE + '/events');
+
+            evtSource.addEventListener('task-log', function(e) {
+                // 新任务开始 - 可触发 UI 更新
             });
 
-            window.electronAPI.onTaskOutput(function(data) {
-                // 实时输出
+            evtSource.addEventListener('task-output', function(e) {
+                // 实时输出 - 可追加到日志区
             });
 
-            window.electronAPI.onTaskComplete(function(data) {
+            evtSource.addEventListener('task-complete', function(e) {
                 loadLogs();
                 loadScheduledTasks();
-                var statusText = data.status === 'success' ? '✅ 执行成功' : '❌ 执行失败';
-                showToast(data.scriptPath.split('/').pop() + ' ' + statusText, data.status === 'success' ? 'success' : 'error');
+                try {
+                    const data = JSON.parse(e.data);
+                    const statusText = data.status === 'success' ? '✅ 执行成功' : '❌ 执行失败';
+                    showToast(data.scriptPath.split('/').pop() + ' ' + statusText, data.status === 'success' ? 'success' : 'error');
+                } catch (err) { /* ignore */ }
             });
 
-            window.electronAPI.onTaskTriggered(function(task) {
-                showToast('⏰ 定时任务 "' + task.name + '" 已触发执行', 'info');
+            evtSource.addEventListener('task-triggered', function(e) {
+                try {
+                    const task = JSON.parse(e.data);
+                    showToast('⏰ 定时任务 "' + task.name + '" 已触发执行', 'info');
+                } catch (err) { /* ignore */ }
             });
+
+            evtSource.onerror = function() {
+                // 断线重连
+                console.log('SSE 断开，5秒后重连...');
+                setTimeout(connectSSE, 5000);
+            };
         }
 
-        // ========== Init ==========
+        // ========== 初始化 ==========
         async function init() {
-            setupListeners();
             await loadAvailableTasks();
             await loadScheduledTasks();
             await loadLogs();
+            connectSSE();
 
-            // 点击模态框外部关闭
             document.getElementById('taskModal').addEventListener('click', function(e) {
                 if (e.target === this) closeModal();
             });

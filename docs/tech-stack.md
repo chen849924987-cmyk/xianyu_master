@@ -1,0 +1,212 @@
+# 闲鱼自动化助手 - 技术栈文档
+
+> **文档版本**：v1.0
+> **更新日期**：2026-05-11
+
+---
+
+## 一、技术栈总览
+
+```
+┌───────────────────────────────────────────────────────────┐
+│                    Next.js (App Router)                    │
+│                                                           │
+│  ┌─────────────────────────────────────────────────────┐  │
+│  │  前端层 (React + TypeScript + Tailwind CSS)          │  │
+│  │  ├── 页面: app/*/page.tsx                           │  │
+│  │  ├── 布局: app/layout.tsx                           │  │
+│  │  └── 组件: app/components/*.tsx                     │  │
+│  └─────────────────────────────────────────────────────┘  │
+│                                                           │
+│  ┌─────────────────────────────────────────────────────┐  │
+│  │  API 层 (Next.js Route Handlers)                     │  │
+│  │  ├── REST: app/api/*/route.ts                       │  │
+│  │  └── SSE:  app/api/sse/route.ts                     │  │
+│  └─────────────────────────────────────────────────────┘  │
+│                                                           │
+│  ┌─────────────────────────────────────────────────────┐  │
+│  │  核心服务层                                           │  │
+│  │  ├── 调度器: node-cron                              │  │
+│  │  ├── 自动化: Playwright (CDP / launch)              │  │
+│  │  ├── 持久化: better-sqlite3                          │  │
+│  │  └── 日志: winston / pino                            │  │
+│  └─────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 二、前端技术栈
+
+| 类别 | 选型 | 版本 | 说明 |
+|------|------|------|------|
+| **框架** | Next.js (App Router) | 14.x+ | 全栈框架，自动路由、SSR/SSG |
+| **UI** | React | 18.x | 组件化 UI 框架 |
+| **语言** | TypeScript | 5.x | 类型安全 |
+| **样式** | Tailwind CSS | 3.x | 原子化 CSS，无需额外样式文件 |
+| **组件库** | shadcn/ui | 最新 | 基于 Radix UI，可定制、无障碍 |
+| **图表** | Recharts | 2.x | React 原生图表库 |
+| **状态管理** | React Context + useReducer | 内置 | 轻量，无需第三方状态库 |
+| **请求** | fetch + Server Actions | 内置 | 原生 API，无需 Axios |
+| **实时** | SSE (EventSource) | 内置 | 轻量替代 WebSocket |
+
+### 选型理由
+
+| 决策 | 理由 |
+|------|------|
+| **Next.js 而非独立后端** | 本地工具无需微服务，Next.js 全栈一包搞定，减少通信开销 |
+| **shadcn/ui 而非 Ant Design** | 轻量、按需引入、源码可定制、无额外体积包袱 |
+| **SSE 而非 WebSocket** | 仅需服务器→客户端单方向推送，SSE 够用且更简单 |
+| **Tailwind 而非其他 CSS** | 开发快、无命名冲突、体积可控（PurgeCSS） |
+| **无状态库** | 页面级状态足够 Context + useReducer，不需要 Redux/Zustand |
+
+---
+
+## 三、后端技术栈
+
+| 类别 | 选型 | 版本 | 说明 |
+|------|------|------|------|
+| **运行时** | Node.js | ≥ 18.x (推荐 20.x) | ES Modules |
+| **全栈框架** | Next.js | 14.x+ | API Routes 替代 Express |
+| **自动化** | Playwright | 1.57+ | 浏览器自动化标准库 |
+| **调度** | node-cron | 4.x | cron 表达式任务调度 |
+| **数据库** | better-sqlite3 | 11.x | 同步 SQLite，性能好 |
+| **日志** | winston / pino | 最新 | 日志分级、轮转 |
+| **导出** | xlsx (SheetJS) | 0.18+ | Excel 生成 |
+
+### 为什么用 better-sqlite3？
+
+- 本地工具，无需网络数据库
+- 同步 API，在 Next.js API Route 中更直观
+- 零配置，文件级存储，部署简单
+- 比 JSON 文件查询更高效、结构化
+
+---
+
+## 四、基础设施
+
+| 工具 | 用途 |
+|------|------|
+| pnpm | 包管理器（快速、节省磁盘） |
+| VS Code | IDE |
+| Git | 版本控制 |
+| Chrome | 自动化目标浏览器（通过 CDP 连接） |
+| Playwright Inspector | 调试自动化脚本 |
+| React DevTools | 前端调试 |
+
+---
+
+## 五、包依赖清单
+
+### 核心依赖
+
+```json
+{
+  "next": "^14.2.0",
+  "react": "^18.3.0",
+  "react-dom": "^18.3.0",
+  "tailwindcss": "^3.4.0",
+  "playwright": "^1.57.0",
+  "node-cron": "^4.2.0",
+  "better-sqlite3": "^11.0.0",
+  "winston": "^3.13.0",
+  "xlsx": "^0.18.5",
+  "dayjs": "^1.11.0",
+  "sharp": "^0.34.0",
+  "recharts": "^2.12.0"
+}
+```
+
+### 开发依赖
+
+```json
+{
+  "typescript": "^5.4.0",
+  "@types/react": "^18.3.0",
+  "@types/node": "^20.0.0",
+  "@types/better-sqlite3": "^7.6.0",
+  "vitest": "^1.6.0",
+  "@playwright/test": "^1.57.0",
+  "@testing-library/react": "^16.0.0",
+  "shadcn-ui": "latest"
+}
+```
+
+### 已存在且保留
+
+| 依赖 | 用途 |
+|------|------|
+| playwright (已有) | 浏览器自动化 |
+| node-cron (已有) | 任务调度 |
+| sharp (已有) | 图片处理 |
+| xlsx (已有) | Excel 导出 |
+| dayjs (已有) | 时间处理 |
+
+---
+
+## 六、目录结构（目标）
+
+```
+xianyu_master/
+├── app/                          # Next.js App Router
+│   ├── layout.tsx                # 根布局（Sidebar + Header）
+│   ├── page.tsx                  # 仪表盘
+│   ├── tasks/                    # 任务管理
+│   ├── schedules/                # 定时任务
+│   ├── logs/                     # 日志
+│   ├── data/                     # 数据看板
+│   ├── settings/                 # 系统设置
+│   └── api/                      # API Routes
+│       ├── tasks/route.ts
+│       ├── schedules/route.ts
+│       ├── logs/route.ts
+│       ├── exports/route.ts
+│       ├── settings/route.ts
+│       └── sse/route.ts
+│
+├── components/                   # React 组件
+│   ├── ui/                       # shadcn/ui 组件
+│   ├── common/                   # 通用组件
+│   ├── dashboard/                # 仪表盘组件
+│   ├── tasks/                    # 任务组件
+│   ├── schedules/                # 定时任务组件
+│   ├── logs/                     # 日志组件
+│   └── settings/                 # 设置组件
+│
+├── lib/                          # 工具库
+│   ├── sse.ts                    # SSE 客户端
+│   ├── api.ts                    # API 封装
+│   ├── db.ts                     # SQLite 实例
+│   └── scheduler.ts              # 任务调度器
+│
+├── types/                        # TS 类型
+│   └── index.ts
+│
+├── tasks/                        # 自动化脚本（保留）
+├── utils/                        # 工具（保留）
+├── modules/                      # 功能模块（保留）
+├── store/                        # 数据（保留）
+│
+├── docs/                         # 文档
+├── input/                        # 输入数据
+└── output/                       # 输出结果
+```
+
+---
+
+## 七、环境要求
+
+| 依赖 | 最低版本 | 推荐版本 |
+|------|---------|---------|
+| Node.js | 18.x | 20.x LTS |
+| pnpm | 8.x | 9.x |
+| Chrome | 最新版 | 最新版 |
+| 操作系统 | Windows 10 / macOS / Linux | Windows 11 |
+
+---
+
+## 文档修订记录
+
+| 日期 | 版本 | 修订内容 | 作者 |
+|------|------|---------|------|
+| 2026-05-11 | v1.0 | 初始版本，完整技术栈定义 | Cline |
