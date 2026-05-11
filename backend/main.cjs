@@ -109,10 +109,24 @@ function calculateNextRun(cronExpression) {
     return '';
 }
 
+// ========== 解析脚本完整路径（兼容新旧路径格式） ==========
+function resolveScriptPath(scriptPath) {
+    // 如果路径已经包含 backend/ 前缀，直接拼接
+    if (scriptPath.startsWith('backend/') || scriptPath.startsWith('backend\\')) {
+        return path.join(APP_ROOT, scriptPath);
+    }
+    // 否则尝试两种路径：先试 backend/tasks/，再试 tasks/
+    const withBackend = path.join(APP_ROOT, 'backend', scriptPath);
+    if (fs.existsSync(withBackend)) {
+        return withBackend;
+    }
+    return path.join(APP_ROOT, scriptPath);
+}
+
 // ========== 执行脚本 ==========
 function runScript(scriptPath) {
     return new Promise((resolve, reject) => {
-        const fullPath = path.join(APP_ROOT, scriptPath);
+        const fullPath = resolveScriptPath(scriptPath);
         const logEntry = {
             id: Date.now().toString(),
             scriptPath,
