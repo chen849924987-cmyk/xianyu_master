@@ -2,7 +2,7 @@
   "name": "xianyu-master",
   "version": "2.0.0",
   "description": "闲鱼自动化助手 - 桌面应用",
-  "main": "main.js",
+  "main": "backend/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node menu.js",
