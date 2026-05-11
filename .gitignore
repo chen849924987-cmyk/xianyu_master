@@ -1,6 +1,6 @@
-# 脚本运行输出产物（backend/ 下）
-backend/output/
-backend/input/
+# 脚本运行输出产物
+output/
+input/
 
 # 发布记录为本地数据，仓库仅保留 publish_records.json.example 空模板
 backend/store/publish_records.json
@@ -133,9 +133,9 @@ Desktop.ini
 # Excel and other data files (uncomment if needed)
 # *.xlsx
 # 本地数据表，不参与合并与提交
-backend/input/汇总_点赞链接.xlsx
-backend/input/汇总_资源.xlsx
-backend/input/点赞_用户列表.xlsx
+input/汇总_点赞链接.xlsx
+input/汇总_资源.xlsx
+input/点赞_用户列表.xlsx
 # *.xls
 # *.csv
 

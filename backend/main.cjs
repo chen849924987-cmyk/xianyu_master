@@ -11,8 +11,8 @@ const path = require('path');
 const { spawn } = require('child_process');
 const cron = require('node-cron');
 
-// 项目运行根目录（backend/ 作为工作目录）
-const APP_ROOT = path.resolve(__dirname);
+// 项目根目录（backend/ 的父目录，input/output 在此）
+const APP_ROOT = path.resolve(__dirname, '..');
 const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
 
 // 存储文件路径
@@ -128,7 +128,7 @@ function runScript(scriptPath) {
         const child = spawn('node', [fullPath], {
             stdio: ['pipe', 'pipe', 'pipe'],
             shell: true,
-            cwd: __dirname
+            cwd: APP_ROOT
         });
 
         let output = '';
