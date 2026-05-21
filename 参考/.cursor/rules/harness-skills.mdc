@@ -1,0 +1,8 @@
+---
+description: Harness skill SOPs — handoff / start / commit workflows (markdown)
+alwaysApply: false
+---
+
+When the user asks to **start a session**, **wrap up / handoff / 收工 / 交接**, or **commit** with a structured workflow, open and follow **`harness/skills/`** (see **`harness/skills/README.md`**). Use **`AGENT_TASK_PROTOCOL.md`** for human intent and **`.data/harness-runtime.json`** (if present) for hook-measured tool trail; run **`npm run harness:end`** / **`harness:end:full`** for **`HANDOFF.json`** artifacts.
+
+To auto-update the protocol intent sections: (1) user sends a message starting with **`更新协议`**, **`/protocol`**, etc. (see **`harness/lib/protocol-intent-user-prompt.mjs`**); or (2) assistant ends with **`<agent_protocol_intent>...</agent_protocol_intent>`** JSON. Details in **`harness/skills/handoff.md`** / **`harness/README.md`**.

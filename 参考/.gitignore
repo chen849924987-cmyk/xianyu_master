@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.data/
+harness/harness.local.env
+*.log
+playwright-report/
+test-results/
+.playwright/
+web/dist/
+docs/hook-usage-report.md

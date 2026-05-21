@@ -1,0 +1,99 @@
+---
+description: 本地浏览器 MCP 验证流程（抖店自动化项目）
+alwaysApply: true
+---
+
+## 本地常用命令
+
+```bash
+npm run build   # TypeScript 编译
+npm run ui:dev  # 本地控制台：前端 http://127.0.0.1:5173 ，API http://127.0.0.1:3847 （Features + 登录态）
+```
+
+业务脚本仍用 **`npm run dev`** 等（见 `package.json`）。安装 Playwright 浏览器（跑 CLI 自动化时）：`npm run browser:install` 或 `npx playwright install chromium`。
+
+晓风低价好物（任务 1.1）：**`npm run xf:low-goods`**（可选 **`XF_NAV_VIA_DOUYIN=1`** + **`XF_SERVICE_MARKET_URL`**）；校准 DOM 用 **`npm run codegen -- <页面URL>`**。验证筛选/入池交互时可用 **浏览器 MCP**（快照 → 操作 → 快照）对照 `src/features/xf-ali-find-low-goods/index.ts` 中文案与按钮。
+
+## 抖店登录态与仓库边界（本地）
+
+- 持久登录态（供 CLI / Playwright 使用）：项目使用 **`storage-state.json`**（默认 `.data/storage-state.json`，可用环境变量 `STORAGE_STATE_PATH` 覆盖），由 **`npm run dev -- --save-session`** 写入。
+- **Cursor 浏览器 MCP**（如 `cursor-ide-browser`）与上述 Playwright 启动的 Chromium **不是同一浏览器配置**：MCP 里登录成功 **不会** 自动出现在 `storage-state.json`；反过来，仅有 `storage-state.json` 也 **不会** 让 MCP 标签页带上同一 Cookie。
+- **勿将** `storageState`、`.env` 或任何凭证提交进 git（含 `DOUDIAN_LOGIN_EMAIL` / `DOUDIAN_LOGIN_PASSWORD` 等自动登录变量）。
+
+## 初始化：获取登录 session 的 MCP 流程（Agent 执行顺序）
+
+目标：让 **自动化脚本可读登录态**，同时在需要时用 MCP 做页面侧验收或排查。按顺序做即可。
+
+### 1. 前置检查（一次性）
+
+- 已安装 Chromium：`npm run browser:install` 或 `npx playwright install chromium`。
+- 确认后台入口：默认 `DOUDIAN_BASE_URL=https://fxg.jinritemai.com`（见 `src/utils/config.ts`），若有自建入口则先在环境里配好再登录。
+
+### 2. 写入 Playwright `storageState`（必经，人工登录发生在本步）
+
+在仓库根目录执行（需要看得见浏览器时用 headed）：
+
+```bash
+PLAYWRIGHT_HEADED=1 npm run dev -- --save-session
+```
+
+- 在弹出的 Chromium 中完成抖店登录（验证码、短信等需人工处理）。
+- 确认已进入后台预期页面后，回到 **同一终端** 按 **Enter**，将当前上下文的 Cookie / storage 写入配置的 `storage-state.json` 路径。
+- **干净标准**：终端出现「已保存登录态」类日志；磁盘上对应路径文件存在且非空。
+
+### 3. 浏览器 MCP：初始化验收（可选但推荐，与「本地 + 浏览器 MCP 验证流程」同一纪律）
+
+用于确认「从网页视角」登录态或后台可达；**不能替代第 2 步写文件**。
+
+1. **`browser_tabs`**：`list`，确认目标标签页或新开页对应的 URL 是否为抖店相关环境。
+2. **`browser_lock`**：若已有可用标签页，先 **`lock`**；无标签页则 **`browser_navigate`** 到 `DOUDIAN_BASE_URL`（或具体后台路径），再 **`lock`**。
+3. **清控制台**（若 MCP 提供）：避免旧日志干扰。
+4. **`browser_snapshot`**（BEFORE）：确认当前是登录页还是已进后台；若仍在登录页，**停止自动化猜测**，标明需用户在 **MCP 浏览器**内登录或回到第 2 步用 Playwright 保存 session。
+5. 若任务仅需验证「CLI 登录态是否够用」：不必在 MCP 内重复登录；改在终端执行一次轻量功能（例如 `npm run dev -- --feature=<id>`）或对 `.data/storage-state.json` 做存在性检查即可。
+6. **`browser_snapshot`**（AFTER）+ 必要时 **`browser_console_messages`** / **`browser_network_requests`**：无未处理 error、关键请求无意外 4xx/5xx。
+7. **`browser_unlock`**：本次 MCP 操作全部结束后再 **`unlock`**。
+
+### 4. 阻塞上报（勿硬闯）
+
+- 登录墙、验证码、风控、权限不足：记录当前 URL、快照要点、控制台/网络证据，交由人工处理后再从第 2 步或第 3 步继续。
+
+## 本地 + 浏览器 MCP 验证流程（改 UI / 交互 / 页面逻辑时）
+
+当 Cursor 已启用 **浏览器类 MCP**（例如内置的 Browser / `cursor-ide-browser`：快照、控制台、网络等）且任务涉及**真实页面行为**时，Agent 应按下面顺序执行，并在不干净时循环直到满足「干净条件」。
+
+### 顺序（与 Snapshot BEFORE → 操作 → Snapshot AFTER 一致）
+
+1. **选定目标**：确认当前操作的 **标签页 URL** 就是要测的环境（本地 dev、已登录的抖店页等）；需要导航时用 MCP 导航到约定地址。
+2. **清控制台**：在复现问题或验证修复前清空控制台（若 MCP 提供 clear console / 等价操作），避免旧日志干扰判断。
+3. **Snapshot BEFORE**：在触发用户路径之前打**页面结构快照**（必要时配合截图），作为基线。
+4. **Trigger UI path**：按任务要求完成点击、输入、滚动、等待加载等；**结构或 URL 可能变化后**，下一次交互前必须重新快照（除非 MCP 文档明确可跳过）。
+5. **运行时证据**：在交互过程中或结束后查看 **控制台消息**、必要时 **网络请求**；把与任务相关的 error / failed 请求当作阻塞项。
+6. **Snapshot AFTER**：操作完成后再次快照（+ 截图若需要视觉确认），与 BEFORE 对比关键元素或文案是否达到预期。
+7. **Until clean**：若仍有未处理报错、失败请求或 UI 未达预期 → **改代码或配置** → 按需重启本地服务 → **从步骤 2 或 3 起重跑**同一验证路径，直到干净或明确上报阻塞（登录墙、验证码、权限等需人工处理的情况）。
+
+### 「干净」的最低标准（可按任务在 `AGENT_TASK_PROTOCOL.md` 里加严）
+
+- 与本次改动相关的控制台 **无未处理 error**（已知可忽略的告警可在协议里列明）。
+- 关键接口 **无意外 4xx/5xx**（若任务涉及请求）。
+- 快照中关键控件/文案/状态符合任务描述。
+
+### 提交前（可选但推荐）
+
+- 改动涉及 TypeScript 时先 **`npm run build`**，避免类型错误进仓库。
+
+### MCP 工具自身的纪律
+
+- 遵守各 MCP 的说明：例如需要 **lock/unlock** 时先锁再操作；**每次可能改变 DOM 或 URL 的动作后**用新快照再点下一步；同一步重复失败勿盲目重试，先换新证据（快照/控制台/网络）再改策略。
+- **Playwright MCP**（如 `user-playwright`：`browser_navigate`、`browser_snapshot`、`browser_run_code_unsafe` 等）与 **cursor-ide-browser** 同属「浏览器类 MCP」，下列实录纪律同样适用。
+
+### MCP 实录后记录（必填）
+
+凡通过 MCP 完成**带页面结论**的验证（导航、快照、点击、`browser_run_code_unsafe` 探测 DOM/登录态等），**在本次答复或本轮收尾前**须留痕，便于后续会话复现：
+
+1. **落盘位置**：仓库根下 **`.data/mcp-session-records/`**（目录若不存在则创建；该路径已在 `.gitignore`，勿提交）。
+2. **文件名**：`mcp-{YYYYMMDD}-{主题缩写}.md`，或在同一文件末尾追加一段分隔记录。
+3. **内容**：按 **`docs/script/mcp-session-record.md`** 模板填写——目标 URL、MCP 名称、操作序列、**结论/阻塞**、关联代码路径；**禁止**粘贴 Cookie、`storage-state` 正文、`.env` 密钥。
+4. **助手交付**：在对话里用一两句话说明「已写入哪条记录文件」，便于人类检索。
+5. **Feature 清单**：按 Feature 验收抖店脚本时，步骤模板见 **`tests/mcp/features/`**（与 `src/features` 一一对应）；注册表与契约见 **`tests/mcp/contracts/`**。
+
+未产生页面结论的纯工具探测（如仅 `browser_tabs` list）可省略。

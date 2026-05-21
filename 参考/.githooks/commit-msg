@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+# 跨平台：Git 自带 POSIX sh。勿改为 CRLF 行尾。
+ROOT="$(git rev-parse --show-toplevel)" || exit 0
+cd "$ROOT" || exit 0
+export NODE_NO_WARNINGS=1
+exec node "$ROOT/harness/git/check-commit-msg-stop-hook.mjs" "$1"

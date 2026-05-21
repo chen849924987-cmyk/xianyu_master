@@ -13,19 +13,14 @@ import {
   validateSession,
   clearSession,
   saveSessionInteractive,
-  finalizeSaveSessionFromPage,
+  saveSessionFromCDP,
+  finalizeInteractiveSave,
   getSessionFileInfo,
   importSessionFromPath,
   SessionStatus,
   SaveSessionResult,
   ImportSessionResult,
 } from "@/lib/session-manager";
-
-/**
- * 全局变量，用于在 POST 请求的生命周期内跟踪浏览器页面引用
- * 注意：Next.js 无状态 API 路由中，此方式仅用于演示/开发环境
- */
-let currentPageRef: any = null;
 
 /**
  * 从请求中提取可选的 filePath 参数
@@ -141,49 +136,59 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // === 启动浏览器保存登录态 ===
     if (action === "save") {
+      const cdpPort =
+        typeof port === "number"
+          ? port
+          : port != null
+            ? parseInt(String(port), 10)
+            : NaN;
+      if (!Number.isNaN(cdpPort) && cdpPort > 0) {
+        const result = await saveSessionFromCDP({
+          port: cdpPort,
+          savePath: filePath,
+        });
+        return NextResponse.json({
+          success: result.success,
+          data: result,
+        });
+      }
+
       const result: SaveSessionResult = await saveSessionInteractive({
-        port: typeof port === "number" ? port : undefined,
         savePath: filePath,
       });
       return NextResponse.json({
         success: result.success,
         data: result,
-        requiresUserAction: !port,
+        requiresUserAction: result.success,
       });
     }
 
-    // === 从后端页面引用最终确定保存 ===
     if (action === "finalize") {
-      if (!currentPageRef) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "没有正在进行的保存会话，请先调用 save 或 saveFromCDP",
-          },
-          { status: 400 }
-        );
-      }
-      const result = await finalizeSaveSessionFromPage(currentPageRef, filePath);
-      currentPageRef = null;
+      const result = await finalizeInteractiveSave(filePath);
       return NextResponse.json({
         success: result.success,
         data: result,
       });
     }
 
-    // === 连接到 CDP 端口并保存 ===
     if (action === "saveFromCDP") {
-      if (!port) {
+      const cdpPort =
+        typeof port === "number"
+          ? port
+          : port != null
+            ? parseInt(String(port), 10)
+            : NaN;
+      if (Number.isNaN(cdpPort) || cdpPort <= 0) {
         return NextResponse.json(
           {
             success: false,
-            error: "CDP 模式下需要提供 port 参数",
+            error: "CDP 模式下需要提供有效的 port 参数",
           },
           { status: 400 }
         );
       }
-      const result: SaveSessionResult = await saveSessionInteractive({
-        port: typeof port === "number" ? port : parseInt(String(port), 10),
+      const result = await saveSessionFromCDP({
+        port: cdpPort,
         savePath: filePath,
       });
       return NextResponse.json({

@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# 跨平台：Git 自带 POSIX sh（Windows 上为 Git 自带的 sh.exe）。勿改为 CRLF 行尾。
+ROOT="$(git rev-parse --show-toplevel)" || exit 0
+export NODE_NO_WARNINGS=1
+exec node "$ROOT/harness/git/run-post-commit.mjs"

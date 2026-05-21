@@ -11,7 +11,7 @@
  */
 import fs from "fs";
 import path from "path";
-import { chromium } from "playwright";
+import { chromium, type Browser, type BrowserContext } from "playwright";
 
 // ========== 常量定义 ==========
 
@@ -27,6 +27,20 @@ export const XIANYU_BASE_URL = "https://www.goofish.com";
 
 /** 保存会话时启动浏览器的超时时间（10分钟） */
 export const SAVE_SESSION_TIMEOUT = 10 * 60 * 1000;
+
+/** 交互式保存时暂存的浏览器会话（供 finalize 使用） */
+let pendingInteractiveSession: {
+  browser: Browser;
+  context: BrowserContext;
+} | null = null;
+
+/** 与闲鱼登录相关的 URL 片段 */
+const SESSION_URL_HINTS = ["goofish", "taobao", "alipay", "passport"];
+
+function pageMatchesSessionUrl(url: string): boolean {
+  const lower = url.toLowerCase();
+  return SESSION_URL_HINTS.some((hint) => lower.includes(hint));
+}
 
 /** 登录页检测相关选择器/关键字 */
 const LOGIN_INDICATORS = [
@@ -441,69 +455,57 @@ export async function validateSession(customPath?: string): Promise<{
  * 4. 导出登录态
  *
  * @param {object} [options] 可选参数
- * @param {number} [options.port] CDP 端口（如果提供，则连接到已有浏览器）
  * @param {string} [options.savePath] 自定义保存路径（可选）
- * @returns {Promise<SaveSessionResult>} 保存结果
+ * @returns {Promise<SaveSessionResult>} 保存结果（需再调用 finalizeInteractiveSave）
  */
 export async function saveSessionInteractive(options?: {
-  port?: number;
   savePath?: string;
 }): Promise<SaveSessionResult> {
   const savePath = resolveFilePath(options?.savePath);
   let browser;
-  let context;
 
   try {
-    if (options?.port) {
-      // === 连接到已有 Chrome 浏览器（通过 CDP）===
-      console.log(
-        `[SessionManager] 正在连接到已有 Chrome (CDP port: ${options.port})...`
-      );
-      browser = await chromium.connectOverCDP(
-        `http://127.0.0.1:${options.port}`
-      );
-      const contexts = browser.contexts();
-      context = contexts.length > 0 ? contexts[0] : await browser.newContext();
-    } else {
-      // === 启动新浏览器 ===
-      console.log("[SessionManager] 正在启动 Chromium 浏览器...");
-      browser = await chromium.launch({
-        headless: false,
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      });
-      context = await browser.newContext();
+    if (pendingInteractiveSession) {
+      try {
+        await pendingInteractiveSession.browser.close();
+      } catch {
+        /* ignore */
+      }
+      pendingInteractiveSession = null;
     }
 
-    // 创建一个新标签页并导航到闲鱼
+    console.log("[SessionManager] 正在启动 Chromium 浏览器...");
+    browser = await chromium.launch({
+      headless: false,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const context = await browser.newContext();
+
     const page = await context.newPage();
     console.log(`[SessionManager] 正在打开闲鱼: ${XIANYU_BASE_URL}`);
-    console.log("[SessionManager] 请在浏览器中完成登录操作...");
     await page.goto(XIANYU_BASE_URL, {
       waitUntil: "domcontentloaded",
       timeout: 60000,
     });
-    await page.waitForLoadState("networkidle", { timeout: 60000 }).catch(() => {
-      // 网络空闲可能不会被触发，忽略超时
-    });
+    await page.waitForLoadState("networkidle", { timeout: 60000 }).catch(() => {});
     await page.bringToFront();
 
-    // 返回结果
+    pendingInteractiveSession = { browser, context };
+
     return {
       success: true,
-      message:
-        "浏览器已打开，请完成登录后按 Enter 确认保存。\n" +
-        "如果已登录，可直接在终端按 Enter。",
+      message: "浏览器已打开，请在闲鱼页面完成登录后，在控制台点击「确认保存」。",
       filePath: savePath,
     };
   } catch (error) {
-    // 确保资源释放
-    if (browser && !options?.port) {
+    if (browser) {
       try {
         await browser.close();
       } catch {
         /* ignore */
       }
     }
+    pendingInteractiveSession = null;
 
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error(`[SessionManager] 保存登录态失败:`, errMsg);
@@ -513,6 +515,172 @@ export async function saveSessionInteractive(options?: {
       filePath: savePath,
     };
   }
+}
+
+/**
+ * 从已开启远程调试的 Chrome 导出登录态（一次性落盘）
+ */
+export async function saveSessionFromCDP(options: {
+  port: number;
+  savePath?: string;
+}): Promise<SaveSessionResult> {
+  const targetPath = resolveFilePath(options.savePath);
+  let browser;
+
+  try {
+    console.log(
+      `[SessionManager] 正在连接 Chrome CDP (port: ${options.port})...`
+    );
+    browser = await chromium.connectOverCDP(
+      `http://127.0.0.1:${options.port}`
+    );
+    const contexts = browser.contexts();
+    if (contexts.length === 0) {
+      return {
+        success: false,
+        message:
+          "CDP 已连接但未找到浏览器上下文，请确认 Chrome 以 --remote-debugging-port 启动",
+        filePath: targetPath,
+        cookieCount: 0,
+      };
+    }
+
+    const context = contexts[0];
+    const pages = context.pages();
+    const sessionPage = pages.find((p) => {
+      try {
+        return pageMatchesSessionUrl(p.url());
+      } catch {
+        return false;
+      }
+    });
+
+    if (!sessionPage) {
+      const page = pages[0] ?? (await context.newPage());
+      console.log(`[SessionManager] 导航到闲鱼: ${XIANYU_BASE_URL}`);
+      await page.goto(XIANYU_BASE_URL, {
+        waitUntil: "domcontentloaded",
+        timeout: 60000,
+      });
+    }
+
+    const dir = path.dirname(targetPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    await context.storageState({ path: targetPath });
+    const raw = fs.readFileSync(targetPath, "utf-8");
+    const state = JSON.parse(raw) as { cookies?: unknown[] };
+    const cookieCount = state.cookies?.length ?? 0;
+
+    await browser.close();
+
+    if (cookieCount === 0) {
+      return {
+        success: false,
+        message:
+          "未导出到任何 Cookie。请先在 Chrome 中打开闲鱼并完成登录，再重试。",
+        filePath: targetPath,
+        cookieCount: 0,
+      };
+    }
+
+    console.log(
+      `[SessionManager] CDP 登录态已保存: ${targetPath} (${cookieCount} cookies)`
+    );
+    return {
+      success: true,
+      message: `登录态已从 Chrome 保存成功，共 ${cookieCount} 个 Cookie`,
+      filePath: targetPath,
+      cookieCount,
+    };
+  } catch (error) {
+    if (browser) {
+      try {
+        await browser.close();
+      } catch {
+        /* ignore */
+      }
+    }
+
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error(`[SessionManager] CDP 保存登录态失败:`, errMsg);
+    return {
+      success: false,
+      message: `从 Chrome 保存失败: ${errMsg}。请确认已用 start_chrome.bat 启动且端口正确。`,
+      filePath: targetPath,
+    };
+  }
+}
+
+/**
+ * 确认保存交互式登录会话（写入 storageState 并关闭浏览器）
+ */
+export async function finalizeInteractiveSave(
+  savePath?: string
+): Promise<SaveSessionResult> {
+  const targetPath = resolveFilePath(savePath);
+
+  if (!pendingInteractiveSession) {
+    return {
+      success: false,
+      message: "没有待保存的浏览器会话，请先点击「启动浏览器并登录」",
+      filePath: targetPath,
+    };
+  }
+
+  const { browser, context } = pendingInteractiveSession;
+  pendingInteractiveSession = null;
+
+  try {
+    const state = await context.storageState();
+    const dir = path.dirname(targetPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(targetPath, JSON.stringify(state, null, 2), "utf-8");
+
+    const cookieCount = (state.cookies || []).length;
+    await browser.close();
+
+    if (cookieCount === 0) {
+      return {
+        success: false,
+        message: "未保存到任何 Cookie，请先在浏览器中完成闲鱼登录",
+        filePath: targetPath,
+        cookieCount: 0,
+      };
+    }
+
+    console.log(
+      `[SessionManager] 登录态已保存: ${targetPath} (${cookieCount} cookies)`
+    );
+    return {
+      success: true,
+      message: `登录态已保存成功，共 ${cookieCount} 个 Cookie`,
+      filePath: targetPath,
+      cookieCount,
+    };
+  } catch (error) {
+    try {
+      await browser.close();
+    } catch {
+      /* ignore */
+    }
+
+    const errMsg = error instanceof Error ? error.message : String(error);
+    return {
+      success: false,
+      message: `保存登录态失败: ${errMsg}`,
+      filePath: targetPath,
+    };
+  }
+}
+
+/** 是否存在待确认的交互式保存会话 */
+export function hasPendingInteractiveSession(): boolean {
+  return pendingInteractiveSession !== null;
 }
 
 /**

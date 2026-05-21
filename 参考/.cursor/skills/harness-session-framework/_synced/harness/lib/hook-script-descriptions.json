@@ -1,0 +1,17 @@
+{
+  "prompt-session-end.mjs": "收尾关键词触发会话收尾与可选 git 提交；解析「更新协议」类口令写 AGENT_TASK_PROTOCOL；记录认知信号",
+  "session-start-context.mjs": "注入 HANDOFF.json、AGENT_TASK_PROTOCOL 摘录与 harness-runtime 轨迹供 Agent 开场上下文",
+  "after-agent-response.mjs": "缓存本轮助手全文；解析文末 <agent_protocol_intent> 同步协议意图区",
+  "agent-stop.mjs": "本轮结束时写 HANDOFF.last_agent_turn；可选挫败切换或代码评审 followup_message",
+  "before-shell-safety.mjs": "执行 Shell 前审计命令风险（只读/网络/destructive），返回 allow/deny/ask",
+  "pre-tool-safety.mjs": "Agent 调用 Shell 工具前做与终端一致的安全审计",
+  "after-file-verify.mjs": "保存后可选跑验证命令并写入 .data/harness-verify.json（HARNESS_AFTER_EDIT_VERIFY=1）",
+  "after-file-readme-features.mjs": "保存 feature 注册或模块后刷新根 README 功能表（可 HARNESS_SKIP_README_FEATURES_SYNC）",
+  "after-file-standards.mjs": "afterFileEdit：按路径提示对应 docs 代码规范片段（stdout reminder）",
+  "after-file-sync-feature-mcp-docs.mjs": "保存 src/features 后刷新 tests/mcp/features/*.md 与 src/features/*/README.md 的 AUTO 区块（HARNESS_SKIP_FEATURE_MCP_DOC_SYNC）",
+  "after-file-sync-harness-skill.mjs": "保存 docs/、harness/ 后镜像到 .cursor/skills/harness-session-framework/_synced（可 HARNESS_SKIP_CURSOR_SKILL_SYNC）",
+  "after-file-sync-hook-docs.mjs": "保存 harness/hooks、hooks.json 或 hook 描述 JSON 后刷新 docs/harness/hooks/*.md（HARNESS_SKIP_HOOK_DOC_SYNC）",
+  "post-tool-runtime.mjs": "工具成功后向 .data/harness-runtime.json 追加一条成功轨迹",
+  "post-tool-failure-runtime.mjs": "工具失败时累计失败计数并记录错误摘要",
+  "run-hook.mjs": "包装真实 hook 并统计耗时/退出码（写入 hook-usage.json）"
+}

@@ -1,6 +1,29 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import Link from "next/link";
+import { useEffect, useState, useCallback, useRef, type ComponentType } from "react";
+import { FEATURES, scriptPathToSlug } from "@/lib/feature-registry";
+import {
+  IconBolt,
+  IconBook,
+  IconBox,
+  IconCheck,
+  IconClock,
+  IconEdit,
+  IconImport,
+  IconLayout,
+  IconList,
+  IconPlay,
+  IconPlus,
+  IconRefresh,
+  IconScroll,
+  IconSearch,
+  IconShield,
+  IconTool,
+  IconTrash,
+  IconX,
+  type IconProps,
+} from "./components/icons";
 
 // ========== 类型定义 ==========
 interface TaskItem {
@@ -49,11 +72,16 @@ interface ValidateResult {
 // ========== Tab 类型 ==========
 type TabId = "dashboard" | "schedule" | "logs" | "session";
 
-const TAB_CONFIG: { id: TabId; label: string; icon: string }[] = [
-  { id: "dashboard", label: "控制台", icon: "📊" },
-  { id: "schedule", label: "定时任务", icon: "⏰" },
-  { id: "logs", label: "运行日志", icon: "📜" },
-  { id: "session", label: "登录管理", icon: "🔐" },
+const TAB_CONFIG: {
+  id: TabId;
+  label: string;
+  desc: string;
+  Icon: ComponentType<IconProps>;
+}[] = [
+  { id: "dashboard", label: "控制台", desc: "任务概览与快捷执行", Icon: IconLayout },
+  { id: "schedule", label: "定时任务", desc: "Cron 调度与任务编排", Icon: IconClock },
+  { id: "logs", label: "运行日志", desc: "执行记录与输出追踪", Icon: IconScroll },
+  { id: "session", label: "登录管理", desc: "闲鱼登录态保存与校验", Icon: IconShield },
 ];
 
 // ========== Cron 预设 ==========
@@ -115,6 +143,7 @@ export default function HomePage() {
   const [sessionStatus, setSessionStatus] = useState<SessionStatus | null>(null);
   const [sessionValidating, setSessionValidating] = useState(false);
   const [sessionSaving, setSessionSaving] = useState(false);
+  const [sessionPendingFinalize, setSessionPendingFinalize] = useState(false);
   const [sessionCDPPort, setSessionCDPPort] = useState("9222");
   const [sessionCustomPath, setSessionCustomPath] = useState("");
   const [sessionImportPath, setSessionImportPath] = useState("");
@@ -219,7 +248,7 @@ export default function HomePage() {
     evtSource.addEventListener("task-triggered", (e: MessageEvent) => {
       try {
         const task = JSON.parse(e.data) as ScheduledTask;
-        showToast(`⏰ 定时任务 "${task.name}" 已触发执行`, "info");
+        showToast(`定时任务「${task.name}」已触发执行`, "info");
       } catch {
         /* ignore */
       }
@@ -243,7 +272,7 @@ export default function HomePage() {
           body: JSON.stringify({ scriptPath }),
         });
         showToast(
-          `${scriptPath.split("/").pop()} ${result.status === "success" ? "✅ 执行成功" : "❌ 执行失败"}`,
+          `${scriptPath.split("/").pop()} ${result.status === "success" ? "执行成功" : "执行失败"}`,
           result.status === "success" ? "success" : "error"
         );
         loadLogs();
@@ -386,7 +415,7 @@ export default function HomePage() {
         method: "POST",
         body: JSON.stringify({ action: "validate" }),
       });
-      showToast(result.valid ? "✅ " + result.message : "❌ " + result.message, result.valid ? "success" : "error");
+      showToast(result.message, result.valid ? "success" : "error");
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "校验失败";
       showToast(`校验失败: ${msg}`, "error");
@@ -406,56 +435,91 @@ export default function HomePage() {
         body: JSON.stringify({ action: "save" }),
       });
       const json = await resp.json();
-      if (json.success) {
-        showToast("🚀 浏览器已启动，请在闲鱼页面完成登录", "info");
-        // 显示操作提示
-        alert(
-          "浏览器已自动打开到闲鱼首页。\n\n" +
-          "请按以下步骤操作：\n" +
-          "1. 在打开的浏览器中完成登录（扫码/密码/短信）\n" +
-          "2. 确认登录成功后，在此页面点击「确认保存」按钮\n\n" +
-          "注意：如果是通过 CDP 连接已有 Chrome，请确保已打开 --remote-debugging-port=9222"
-        );
+      if (json.success && json.requiresUserAction) {
+        setSessionPendingFinalize(true);
+        showToast("浏览器已启动，登录完成后请点击「确认保存」", "info");
+      } else if (json.success) {
+        showToast(json.data?.message || "操作成功", "success");
+        loadSessionStatus();
       } else {
-        showToast(`启动浏览器失败: ${json.error || "未知错误"}`, "error");
+        showToast(
+          `启动浏览器失败: ${json.error || json.data?.message || "未知错误"}`,
+          "error"
+        );
       }
     } catch (e: unknown) {
       showToast(`保存失败: ${e instanceof Error ? e.message : ""}`, "error");
     } finally {
       setSessionSaving(false);
-      loadSessionStatus();
     }
   }, [loadSessionStatus, showToast]);
 
-  /** 通过 CDP 保存登录态 */
-  const handleSaveSessionCDP = useCallback(async () => {
+  /** 确认保存交互式登录会话 */
+  const handleFinalizeSession = useCallback(async () => {
     setSessionSaving(true);
     try {
       const resp = await fetch("/api/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "save", port: parseInt(sessionCDPPort) }),
+        body: JSON.stringify({ action: "finalize" }),
       });
       const json = await resp.json();
-      if (json.success) {
-        showToast("✅ 登录态已从 CDP 浏览器保存成功", "success");
+      const cookieCount = json.data?.cookieCount ?? 0;
+      if (json.success && cookieCount > 0) {
+        setSessionPendingFinalize(false);
+        showToast(json.data?.message || "登录态已保存", "success");
+        loadSessionStatus();
       } else {
-        showToast(`保存失败: ${json.error || "未知错误"}`, "error");
+        showToast(
+          json.data?.message || json.error || "保存失败，请确认已在浏览器中登录",
+          "error"
+        );
       }
     } catch (e: unknown) {
       showToast(`保存失败: ${e instanceof Error ? e.message : ""}`, "error");
     } finally {
       setSessionSaving(false);
-      loadSessionStatus();
     }
-  }, [apiFetch, loadSessionStatus, sessionCDPPort, showToast]);
+  }, [loadSessionStatus, showToast]);
+
+  /** 通过 CDP 从 Chrome 一次性导出登录态 */
+  const handleSaveSessionCDP = useCallback(async () => {
+    const port = parseInt(sessionCDPPort, 10);
+    if (Number.isNaN(port) || port <= 0) {
+      showToast("请输入有效的 CDP 端口号", "error");
+      return;
+    }
+    setSessionSaving(true);
+    try {
+      const resp = await fetch("/api/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "saveFromCDP", port }),
+      });
+      const json = await resp.json();
+      const cookieCount = json.data?.cookieCount ?? 0;
+      if (json.success && cookieCount > 0) {
+        showToast(json.data?.message || "登录态已从 Chrome 保存成功", "success");
+        loadSessionStatus();
+      } else {
+        showToast(
+          json.data?.message || json.error || "保存失败，请确认 Chrome 已登录闲鱼",
+          "error"
+        );
+      }
+    } catch (e: unknown) {
+      showToast(`保存失败: ${e instanceof Error ? e.message : ""}`, "error");
+    } finally {
+      setSessionSaving(false);
+    }
+  }, [loadSessionStatus, sessionCDPPort, showToast]);
 
   /** 清除登录态 */
   const handleClearSession = useCallback(async () => {
     if (!confirm("确定要清除已保存的登录态吗？\n\n清除后需要重新登录才能使用需要登录的自动化功能。")) return;
     try {
       await apiFetch("/api/session", { method: "DELETE" });
-      showToast("✅ 登录态已清除", "success");
+      showToast("登录态已清除", "success");
       loadSessionStatus();
     } catch (e: unknown) {
       showToast(`清除失败: ${e instanceof Error ? e.message : ""}`, "error");
@@ -479,7 +543,7 @@ export default function HomePage() {
       if (json.success && json.data?.success) {
         const result = json.data;
         showToast(
-          `✅ 导入成功！共 ${result.cookieCount} 个 Cookie，域名: ${(result.domains || []).join(", ")}`,
+          `导入成功：共 ${result.cookieCount} 个 Cookie，域名 ${(result.domains || []).join(", ")}`,
           "success"
         );
         loadSessionStatus();
@@ -561,7 +625,9 @@ export default function HomePage() {
         <div className="card">
           <div className="card-body">
             <div className="empty-state">
-              <span className="icon-big">🔍</span>
+              <div className="empty-state-icon">
+                <IconSearch size={24} />
+              </div>
               <p>正在检测登录态状态...</p>
             </div>
           </div>
@@ -576,15 +642,19 @@ export default function HomePage() {
         {/* 状态概览卡片 */}
         <div className="card">
           <div className="card-header">
-            <h3>🔐 闲鱼登录态管理</h3>
+            <h3>
+              <IconShield size={18} />
+              闲鱼登录态管理
+            </h3>
             <button className="btn btn-ghost btn-sm" onClick={() => { loadSessionStatus(); showToast("登录态状态已刷新", "info"); }}>
-              🔄 刷新
+              <IconRefresh size={16} />
+              刷新
             </button>
           </div>
           <div className="card-body">
             <div className="session-hero">
               <div className={`session-hero-icon ${isLoggedIn ? "success" : "danger"}`}>
-                {isLoggedIn ? "✓" : "✗"}
+                {isLoggedIn ? <IconCheck size={28} /> : <IconX size={28} />}
               </div>
               <div className="session-hero-text">
                 <div className="session-hero-title">
@@ -603,7 +673,10 @@ export default function HomePage() {
         {/* 登录态详情 */}
         <div className="card">
           <div className="card-header">
-            <h3>📋 登录态详情</h3>
+            <h3>
+              <IconList size={18} />
+              登录态详情
+            </h3>
           </div>
           <div className="card-body">
             <table className="session-detail-table">
@@ -657,7 +730,10 @@ export default function HomePage() {
         {/* 操作区域 */}
         <div className="card">
           <div className="card-header">
-            <h3>🛠️ 操作</h3>
+            <h3>
+              <IconTool size={18} />
+              操作
+            </h3>
           </div>
           <div className="card-body">
             <div className="session-actions">
@@ -670,13 +746,21 @@ export default function HomePage() {
                     onClick={handleValidateSession}
                     disabled={sessionValidating || !isLoggedIn}
                   >
-                    {sessionValidating ? <><span className="spinner" /> 校验中...</> : "🔍 校验登录态"}
+                    {sessionValidating ? (
+                      <>
+                        <span className="spinner" /> 校验中...
+                      </>
+                    ) : (
+                      <>
+                        <IconSearch size={16} /> 校验登录态
+                      </>
+                    )}
                   </button>
                   <button
                     className="btn btn-ghost"
                     onClick={() => { loadSessionStatus(); showToast("已刷新登录态状态", "info"); }}
                   >
-                    🔄 刷新状态
+                    <IconRefresh size={16} /> 刷新状态
                   </button>
                 </div>
               </div>
@@ -694,7 +778,15 @@ export default function HomePage() {
                     onClick={handleSaveSession}
                     disabled={sessionSaving}
                   >
-                    {sessionSaving ? <><span className="spinner" /> 启动中...</> : "🚀 启动浏览器并登录"}
+                    {sessionSaving ? (
+                      <>
+                        <span className="spinner" /> 启动中...
+                      </>
+                    ) : (
+                      <>
+                        <IconPlay size={16} /> 启动浏览器并登录
+                      </>
+                    )}
                   </button>
                   <button
                     className="btn btn-outline"
@@ -712,8 +804,29 @@ export default function HomePage() {
                     }}
                     disabled={sessionSaving}
                   >
-                    {sessionSaving ? <><span className="spinner" /> 保存中...</> : "🌐 从Chrome保存"}
+                    {sessionSaving ? (
+                      <>
+                        <span className="spinner" /> 保存中...
+                      </>
+                    ) : (
+                      "从 Chrome 保存"
+                    )}
                   </button>
+                  {sessionPendingFinalize && (
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleFinalizeSession}
+                      disabled={sessionSaving}
+                    >
+                      {sessionSaving ? (
+                        <>
+                          <span className="spinner" /> 保存中...
+                        </>
+                      ) : (
+                        "确认保存"
+                      )}
+                    </button>
+                  )}
                 </div>
                 {/* CDP 端口设置 */}
                 <div className="session-cdp-config">
@@ -738,7 +851,7 @@ export default function HomePage() {
                     onClick={handleClearSession}
                     disabled={!isLoggedIn}
                   >
-                    🗑️ 清除登录态
+                    <IconTrash size={16} /> 清除登录态
                   </button>
                 </div>
               </div>
@@ -747,7 +860,7 @@ export default function HomePage() {
 
               {/* 自定义文件路径区域 */}
               <div className="session-action-group">
-                <div className="session-action-title">📁 查看其他文件路径</div>
+                <div className="session-action-title">查看其他文件路径</div>
                 <div className="session-action-desc">
                   输入自定义的 storageState 文件路径来查看其登录态状态信息。
                 </div>
@@ -765,7 +878,7 @@ export default function HomePage() {
                     onClick={handleCheckCustomPath}
                     disabled={!sessionCustomPath.trim()}
                   >
-                    🔍 查看状态
+                    <IconSearch size={16} /> 查看状态
                   </button>
                   <button
                     className="btn btn-ghost btn-sm"
@@ -775,7 +888,7 @@ export default function HomePage() {
                       showToast("已恢复到默认路径", "info");
                     }}
                   >
-                    ↩ 恢复默认
+                    恢复默认
                   </button>
                 </div>
               </div>
@@ -784,7 +897,7 @@ export default function HomePage() {
 
               {/* 导入已有文件区域 */}
               <div className="session-action-group">
-                <div className="session-action-title">📥 导入已有登录态文件</div>
+                <div className="session-action-title">导入已有登录态文件</div>
                 <div className="session-action-desc">
                   从其他路径导入已有的 Playwright storageState JSON 文件。文件会被复制到默认存储路径使用。
                 </div>
@@ -802,7 +915,15 @@ export default function HomePage() {
                     onClick={handleImportSession}
                     disabled={sessionImporting || !sessionImportPath.trim()}
                   >
-                    {sessionImporting ? <><span className="spinner" /> 导入中...</> : "📥 导入并覆盖"}
+                    {sessionImporting ? (
+                      <>
+                        <span className="spinner" /> 导入中...
+                      </>
+                    ) : (
+                      <>
+                        <IconImport size={16} /> 导入并覆盖
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
@@ -813,7 +934,10 @@ export default function HomePage() {
         {/* 使用说明 */}
         <div className="card">
           <div className="card-header">
-            <h3>📖 使用说明</h3>
+            <h3>
+              <IconBook size={18} />
+              使用说明
+            </h3>
           </div>
           <div className="card-body">
             <div className="session-help">
@@ -830,13 +954,15 @@ export default function HomePage() {
               <p>闲鱼的登录态 Cookie 有效期有限，如果校验失败或被重定向到登录页，请重新执行保存登录态的流程。</p>
 
               <h4>安全提醒</h4>
-              <p className="session-warning-text">⚠️ 登录态文件包含你的会话 Cookie，请勿分享或提交到 Git 仓库。项目已配置 .gitignore 自动排除。</p>
+              <p className="session-warning-text">登录态文件包含你的会话 Cookie，请勿分享或提交到 Git 仓库。项目已配置 .gitignore 自动排除。</p>
             </div>
           </div>
         </div>
       </>
     );
   }
+
+  const activeTabMeta = TAB_CONFIG.find((t) => t.id === activeTab)!;
 
   // ========== 主渲染 ==========
   return (
@@ -845,10 +971,15 @@ export default function HomePage() {
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="logo">
-            ⚡ 闲鱼助手
-            <span className="logo-badge">v2.0</span>
+            <span className="logo-icon">
+              <IconBolt size={20} />
+            </span>
+            <span className="logo-text">
+              <span className="logo-title">闲鱼助手</span>
+              <span className="logo-badge">v2.1</span>
+            </span>
           </div>
-          <div className="subtitle">自动化任务管理平台</div>
+          <p className="subtitle">自动化任务管理平台</p>
         </div>
         <nav className="nav-list">
           {TAB_CONFIG.map((tab) => (
@@ -857,19 +988,43 @@ export default function HomePage() {
               className={`nav-item ${activeTab === tab.id ? "active" : ""}`}
               onClick={() => setActiveTab(tab.id)}
             >
-              <span className="icon">{tab.icon}</span>
+              <span className="nav-icon">
+                {(() => {
+                  const I = tab.Icon;
+                  return <I size={18} />;
+                })()}
+              </span>
               <span>{tab.label}</span>
             </div>
           ))}
         </nav>
+        <div className="sidebar-features">
+          <div className="sidebar-features-title">功能模块</div>
+          <div className="sidebar-features-list">
+            {FEATURES.map((f) => (
+              <Link
+                key={f.slug}
+                href={`/features/${f.slug}`}
+                className="feature-nav-item"
+                title={f.description}
+              >
+                <span className="feature-nav-name">{f.name}</span>
+                <span className="feature-nav-cat">{f.category}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
         {renderSessionIndicator()}
-        <div className="sidebar-footer">闲鱼自动化助手 v2.0 · 本地服务</div>
+        <div className="sidebar-footer">闲鱼自动化助手 v2.1 · 本地服务</div>
       </aside>
 
       {/* ======== 主内容区 ======== */}
       <main className="main-content">
         <header className="top-bar">
-          <h2>{TAB_CONFIG.find((t) => t.id === activeTab)?.icon} {TAB_CONFIG.find((t) => t.id === activeTab)?.label}</h2>
+          <div className="top-bar-title-wrap">
+            <h2>{activeTabMeta.label}</h2>
+            <p className="page-desc">{activeTabMeta.desc}</p>
+          </div>
           <div className="actions">
             <button
               className="btn btn-ghost btn-sm"
@@ -881,11 +1036,13 @@ export default function HomePage() {
                 showToast("数据已刷新", "info");
               }}
             >
-              🔄 刷新
+              <IconRefresh size={16} />
+              刷新
             </button>
             {activeTab === "schedule" && (
-              <button className="btn btn-primary btn-sm" onClick={openAddModal}>
-                ➕ 新建定时任务
+              <button type="button" className="btn btn-primary btn-sm" onClick={openAddModal}>
+                <IconPlus size={16} />
+                新建定时任务
               </button>
             )}
           </div>
@@ -897,59 +1054,89 @@ export default function HomePage() {
             <>
               <div className="stats-row">
                 <div className="stat-card">
-                  <div className="stat-value">{stats.total}</div>
-                  <div className="stat-label">总任务数</div>
+                  <div className="stat-icon stat-icon--accent">
+                    <IconBox size={22} />
+                  </div>
+                  <div className="stat-body">
+                    <div className="stat-value">{stats.total}</div>
+                    <div className="stat-label">总任务数</div>
+                  </div>
                 </div>
                 <div className="stat-card">
-                  <div className="stat-value" style={{ color: "var(--success)" }}>
-                    {stats.scheduled}
+                  <div className="stat-icon stat-icon--success">
+                    <IconClock size={22} />
                   </div>
-                  <div className="stat-label">定时任务</div>
+                  <div className="stat-body">
+                    <div className="stat-value">{stats.scheduled}</div>
+                    <div className="stat-label">定时任务</div>
+                  </div>
                 </div>
                 <div className="stat-card">
-                  <div className="stat-value" style={{ color: "var(--accent)" }}>
-                    {stats.running}
+                  <div className="stat-icon stat-icon--accent">
+                    <IconPlay size={22} />
                   </div>
-                  <div className="stat-label">运行中</div>
+                  <div className="stat-body">
+                    <div className="stat-value">{stats.running}</div>
+                    <div className="stat-label">运行中</div>
+                  </div>
                 </div>
                 <div className="stat-card">
-                  <div className="stat-value" style={{ color: "var(--warning)" }}>
-                    {stats.todayLogs}
+                  <div className="stat-icon stat-icon--warning">
+                    <IconScroll size={22} />
                   </div>
-                  <div className="stat-label">今日日志</div>
+                  <div className="stat-body">
+                    <div className="stat-value">{stats.todayLogs}</div>
+                    <div className="stat-label">今日日志</div>
+                  </div>
                 </div>
               </div>
+
 
               {/* 任务列表 */}
               <div className="card">
                 <div className="card-header">
-                  <h3>📋 所有可用任务</h3>
+                  <h3><IconList size={18} /> 所有可用任务</h3>
                   <span className="text-sm text-muted">共 {availableTasks.length} 个任务</span>
                 </div>
                 <div className="card-body">
                   <div className="task-grid">
                     {availableTasks.length === 0 ? (
                       <div className="empty-state">
-                        <span className="icon-big">📦</span>
+                        <div className="empty-state-icon"><IconBox size={24} /></div>
                         <p>暂无可用任务</p>
                       </div>
                     ) : (
                       availableTasks.map((task) => (
                         <div key={task.path} className="task-card">
-                          <div className="task-name">{task.name}</div>
-                          <div className="task-path">{task.path}</div>
+                          <div className="task-card-top">
+                            <div className="task-card-icon">
+                              <IconBox size={18} />
+                            </div>
+                            <div>
+                              <div className="task-name">{task.name}</div>
+                              <div className="task-path">{task.path}</div>
+                            </div>
+                          </div>
                           <div className="task-actions">
-                            <button
+                            <Link
+                              href={`/features/${scriptPathToSlug(task.path)}`}
                               className="btn btn-primary btn-sm"
+                            >
+                              进入工作台
+                            </Link>
+                            <button
+                              type="button"
+                              className="btn btn-outline btn-sm"
                               onClick={() => runTask(task.path)}
                             >
-                              ▶ 立即运行
+                              <><IconPlay size={14} /> 运行</>
                             </button>
                             <button
-                              className="btn btn-outline btn-sm"
+                              type="button"
+                              className="btn btn-ghost btn-sm"
                               onClick={() => openScheduleFromTask(task.name, task.path)}
                             >
-                              ⏰ 定时
+                              <><IconClock size={14} /> 定时</>
                             </button>
                           </div>
                         </div>
@@ -962,7 +1149,7 @@ export default function HomePage() {
               {/* 最近的定时任务 */}
               <div className="card">
                 <div className="card-header">
-                  <h3>⏰ 最近的定时任务</h3>
+                  <h3><IconClock size={18} /> 最近的定时任务</h3>
                 </div>
                 <div className="card-body">
                   <table className="task-table">
@@ -1020,9 +1207,9 @@ export default function HomePage() {
           {activeTab === "schedule" && (
             <div className="card">
               <div className="card-header">
-                <h3>⏰ 定时任务管理</h3>
+                <h3><><IconClock size={14} /> 定时</>任务管理</h3>
                 <button className="btn btn-primary btn-sm" onClick={openAddModal}>
-                  ➕ 新建定时任务
+                  <><IconPlus size={16} /> 新建定时任务</>
                 </button>
               </div>
               <div className="card-body">
@@ -1077,19 +1264,21 @@ export default function HomePage() {
                                 className="btn btn-outline btn-sm"
                                 onClick={() => runTask(task.scriptPath)}
                               >
-                                ▶
+                                <IconPlay size={14} />
                               </button>
                               <button
                                 className="btn btn-outline btn-sm"
                                 onClick={() => openEditModal(task)}
+                                title="编辑"
                               >
-                                ✏️
+                                <IconEdit size={14} />
                               </button>
                               <button
                                 className="btn btn-danger btn-sm"
                                 onClick={() => deleteTask(task.id)}
+                                title="删除"
                               >
-                                🗑️
+                                <IconTrash size={14} />
                               </button>
                             </div>
                           </td>
@@ -1106,13 +1295,13 @@ export default function HomePage() {
           {activeTab === "logs" && (
             <div className="card">
               <div className="card-header">
-                <h3>📜 运行日志</h3>
+                <h3><IconScroll size={18} /> 运行日志</h3>
                 <div className="flex gap-2">
                   <button className="btn btn-ghost btn-sm" onClick={loadLogs}>
-                    🔄 刷新
+                    <><IconRefresh size={16} /> 刷新</>
                   </button>
                   <button className="btn btn-danger btn-sm" onClick={clearLogs}>
-                    🗑️ 清空日志
+                    <><IconTrash size={16} /> 清空日志</>
                   </button>
                 </div>
               </div>
@@ -1161,9 +1350,9 @@ export default function HomePage() {
         <div className="modal-overlay show" onClick={(e) => e.target === e.currentTarget && closeModal()}>
           <div className="modal">
             <div className="modal-header">
-              <h3>{editingTaskId ? "✏️ 编辑定时任务" : "⏰ 新建定时任务"}</h3>
-              <button className="btn-icon" onClick={closeModal}>
-                ✕
+              <h3>{editingTaskId ? "编辑定时任务" : "新建定时任务"}</h3>
+              <button type="button" className="btn-icon" onClick={closeModal} aria-label="关闭">
+                <IconX size={18} />
               </button>
             </div>
             <div className="modal-body">

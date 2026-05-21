@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "schema": "doudian-master-handoff",
+  "handoff_tier": "fast",
+  "updated_at": "2026-05-11T07:42:46.420Z",
+  "updated_at_local": "2026-05-11 15:42",
+  "session_end_prompt": "commit",
+  "conversation_id": "824f0834-1b0c-46e1-88ed-a0d27a33a295",
+  "hook_note": "已检测收尾关键词（tier=fast）。 已执行 git add -A 并提交。",
+  "git": {
+    "head": "210dc91e349586cd3963aa73bb7f562feb8f14ab",
+    "head_short": "210dc91",
+    "anchor_before": null
+  },
+  "todolist": {
+    "task_ids_in_prompt": [],
+    "updated": [],
+    "skipped": []
+  },
+  "files_touched": [
+    "AGENT_TASK_PROTOCOL.md",
+    "HANDOFF.json"
+  ],
+  "next_suggested": [
+    "Read HANDOFF.json (this file) for structured state.",
+    "Read AGENT_TASK_PROTOCOL.md (human task protocol; hot state — do not embed into RAG).",
+    "Read .data/harness-runtime.json locally for hook tool trail (gitignored).",
+    "Read harness/README.md for harness design.",
+    "Run npm run build (or project checks) if code changed."
+  ],
+  "git_digest_markdown": "#### `git status -sb`\n\n```text\n## main...origin/main [ahead 33]\n```\n\n*无本地锚点（首次在本机收尾，或已删除 .data/session-log-anchor）* **最近 15 条提交：**\n\n```text\n210dc91 chore: 会话收尾 2026-05-11 07:42\nb5f3fd5 chore: agent turn handoff (stop hook)\na45780c chore: agent turn handoff (stop hook)\ndaaecbc chore: agent turn handoff (stop hook)\n129931c chore: agent turn handoff (stop hook)\n48c8a1d chore: agent turn handoff (stop hook)\nd81108a chore: agent turn handoff (stop hook)\n46a51c8 chore: agent turn handoff (stop hook)\nc82613d chore: agent turn handoff (stop hook)\nff459db chore: agent turn handoff (stop hook)\n7da201c chore: agent turn handoff (stop hook)\n4ce03c9 chore: agent turn handoff (stop hook)\nf1add62 chore: agent turn handoff (stop hook)\n7c252cf chore: agent turn handoff (stop hook)\n36bc05b chore: agent turn handoff (stop hook)\n```",
+  "last_agent_turn": {
+    "source": "stop_hook",
+    "status": "completed",
+    "loop_count": 0,
+    "head_short": "5e46941",
+    "assistant_text_excerpt": "当前没有可提交的改动。 我刚检查了仓库状态和 diff，都是空的，所以现在 `commit` 不会产生新提交。 如果你希望，我可以先帮你做你上一条说的事（用 Playwright MCP 连本地 Edge 登录并导出登录态），完成后再帮你提交一次。",
+    "git_diff_stat": "",
+    "response_saved_at": "2026-05-11T07:43:23.925Z",
+    "recorded_local": "2026-05-11 15:43",
+    "recorded_at": "2026-05-11T07:43:24.030Z"
+  }
+}

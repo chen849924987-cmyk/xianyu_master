@@ -8,6 +8,7 @@ import fs from "fs";
 import path from "path";
 import { spawn } from "child_process";
 import cron from "node-cron";
+import { FEATURES } from "@/lib/feature-registry";
 
 // ========== 路径常量 ==========
 export const APP_ROOT = path.resolve(process.cwd());
@@ -62,20 +63,9 @@ export interface TaskLogEntry {
   output: string;
 }
 
-// ========== 可用任务列表 ==========
+// ========== 可用任务列表（与 lib/feature-registry 同步） ==========
 export function getAvailableTasks(): TaskItem[] {
-  return [
-    { name: "每日搜索任务", path: "backend/tasks/get_shop_review_data.js" },
-    { name: "获取飞书聊天链接", path: "backend/tasks/get_feishu_chat_links.js" },
-    { name: "自动聊天链接", path: "backend/tasks/auto_chat_link.js" },
-    { name: "自动回复任务", path: "backend/tasks/auto_reply.js" },
-    { name: "自动发布任务", path: "backend/tasks/publish_links.js" },
-    { name: "关键词搜索任务", path: "backend/tasks/search_shop_links_by_keyword.js" },
-    { name: "获取店铺链接", path: "backend/tasks/get_shop_links.js" },
-    { name: "资源处理任务", path: "backend/tasks/process_link_cozi.js" },
-    { name: "每日链接数据更新", path: "backend/tasks/get_shop_link_date_data.js" },
-    { name: "图片处理任务", path: "backend/tasks/process_image.js" },
-  ];
+  return FEATURES.map((f) => ({ name: f.name, path: f.scriptPath }));
 }
 
 // ========== 定时任务存储 ==========

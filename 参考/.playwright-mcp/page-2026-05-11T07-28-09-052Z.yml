@@ -1,0 +1,400 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img "抖店logo" [ref=e7]
+        - link "首页" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "入驻材料" [ref=e9] [cursor=pointer]:
+          - /url: /enter/quali-fee
+        - link "电商学习中心" [ref=e10] [cursor=pointer]:
+          - /url: https://school.jinritemai.com/doudian/web?from=shop_adtable
+        - link "常见问题" [ref=e11] [cursor=pointer]:
+          - /url: /question
+      - generic [ref=e12]:
+        - link "下载抖店App" [ref=e14] [cursor=pointer]:
+          - /url: https://im.jinritemai.com/pc_app_download?from=officialwebsite
+        - link "入驻拍卖店" [ref=e15] [cursor=pointer]:
+          - /url: https://fxg.jinritemai.com/login/common?next=https%3A%2F%2Ffxg.jinritemai.com%2Fffa%2Fgov%2Fsettle%2Fhome%3Fshop_type%3D14%26vType%3D0
+        - link "入驻即时零售" [ref=e16] [cursor=pointer]:
+          - /url: https://fxg.jinritemai.com/instant-retail?source=newpctopright
+        - link "登录抖店" [ref=e17] [cursor=pointer]:
+          - /url: /login/common
+  - generic [ref=e18]:
+    - generic [ref=e20]:
+      - heading "抖店官网 - 抖音小店，抖音电商官方商家入驻平台登录入口" [level=1]
+      - generic [ref=e22]:
+        - generic [ref=e24]:
+          - link "0保证金创业 享亿级流量 满足规则享0元试运营，先发品后缴保证金(最高五千)" [ref=e25] [cursor=pointer]:
+            - /url: https://eaudit.bytedance.com/shield/fcs-static?fcsId=Bc7CTb70Yf&btm_ppre=a0.b0.c0.d0&btm_pre=a1032.b72953.c1894.index_0&btm_show_id=df1025d3-2501-42f6-9431-608a18a9887c
+            - generic [ref=e26]:
+              - generic [ref=e27]:
+                - heading "0保证金创业 享亿级流量" [level=2] [ref=e28]:
+                  - generic [ref=e29]: 0保证金创业
+                  - generic [ref=e30]: 享亿级流量
+                - paragraph [ref=e31]: 满足规则享0元试运营，先发品后缴保证金(最高五千)
+              - img [ref=e32]
+          - link "三大利好 助商家开店 开店成本更低，经营指导更强，成长流量更多" [ref=e33] [cursor=pointer]:
+            - /url: https://school.jinritemai.com/doudian/web/lark-doc/fdJPT5tDdgwEK?btm_ppre=a0.b0.c0.d0&btm_pre=a1032.b72953.c1894.index_1&btm_show_id=df1025d3-2501-42f6-9431-608a18a9887c&from=shop_default
+            - generic [ref=e34]:
+              - generic [ref=e35]:
+                - heading "三大利好 助商家开店" [level=2] [ref=e36]:
+                  - generic [ref=e37]: 三大利好
+                  - generic [ref=e38]: 助商家开店
+                - paragraph [ref=e39]: 开店成本更低，经营指导更强，成长流量更多
+              - img [ref=e40]
+          - link "老带新活动 限时开放 邀请新商入驻即有机会获得推广金，多邀多得" [ref=e41] [cursor=pointer]:
+            - /url: https://fxg.jinritemai.com/h5/invite?version=v2&btm_ppre=a0.b0.c0.d0&btm_pre=a1032.b72953.c1894.index_2&btm_show_id=df1025d3-2501-42f6-9431-608a18a9887c
+            - generic [ref=e42]:
+              - generic [ref=e43]:
+                - heading "老带新活动 限时开放" [level=2] [ref=e44]:
+                  - generic [ref=e45]: 老带新活动
+                  - generic [ref=e46]: 限时开放
+                - paragraph [ref=e47]: 邀请新商入驻即有机会获得推广金，多邀多得
+              - img [ref=e48]
+          - link "商品卡免佣 降低成本 商品卡0成本启动，叠加佣金减免让你赚更多省更多" [ref=e49] [cursor=pointer]:
+            - /url: https://school.jinritemai.com/doudian/web/article/aHiyhr4djBJC?from=shop_default&btm_ppre=a0.b0.c0.d0&btm_pre=a1032.b72953.c1894.index_3&btm_show_id=df1025d3-2501-42f6-9431-608a18a9887c
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - heading "商品卡免佣 降低成本" [level=2] [ref=e52]:
+                  - generic [ref=e53]: 商品卡免佣
+                  - generic [ref=e54]: 降低成本
+                - paragraph [ref=e55]: 商品卡0成本启动，叠加佣金减免让你赚更多省更多
+              - img [ref=e56]
+          - link "宝藏小店 火热招募中 0元开店 专属成长扶持 更有九大精选权益" [ref=e57] [cursor=pointer]:
+            - /url: https://school.jinritemai.com/doudian/web/article/aJRSXSx1T2BJ?rank=0&fromPage=search_result&searchInfo=3108463985166226679%3A0%3A0%3A4164138410%3A20250603174156AEE859E4A5322C6E2A07&searchId=20250603174156AEE859E4A5322C6E2A07&query=%E5%AE%9D%E8%97%8F%E5%B0%8F%E5%BA%97&resultType=%E5%8A%9F%E8%83%BD&from=shop_table&btm_ppre=a0.b0.c0.d0&btm_pre=a1032.b72953.c1894.index_4&btm_show_id=df1025d3-2501-42f6-9431-608a18a9887c
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - heading "宝藏小店 火热招募中" [level=2] [ref=e60]:
+                  - generic [ref=e61]: 宝藏小店
+                  - generic [ref=e62]: 火热招募中
+                - paragraph [ref=e63]: 0元开店 专属成长扶持 更有九大精选权益
+              - img [ref=e64]
+        - list [ref=e66] [cursor=pointer]:
+          - listitem [ref=e67]: 0元入驻
+          - listitem [ref=e68]: 新商三大利好
+          - listitem [ref=e69]: 限时老带新
+          - listitem [ref=e70]: 商品卡免佣
+          - listitem [ref=e71]: 宝藏小店热招
+    - generic [ref=e72]:
+      - generic [ref=e74]:
+        - generic [ref=e76]:
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - img [ref=e79]
+              - generic [ref=e80]:
+                - generic [ref=e81]: 个体工商户
+                - generic [ref=e82]: 营业执照为个体工商户
+            - button "立即入驻" [ref=e83] [cursor=pointer]:
+              - generic [ref=e84]: 立即入驻
+          - generic [ref=e85]:
+            - img [ref=e86]
+            - text: 入驻限时福利，最高领800元流量券
+          - generic [ref=e87]:
+            - generic [ref=e89]:
+              - generic [ref=e91]:
+                - generic [ref=e92]: "01"
+                - generic [ref=e93]: 提交材料
+                - generic [ref=e94]: 约30分钟
+              - generic [ref=e95]: 上传营业执照、身份证件等资质材料
+              - button "查看材料" [ref=e96] [cursor=pointer]:
+                - generic [ref=e97]: 查看材料
+            - generic [ref=e99]:
+              - generic [ref=e101]:
+                - generic [ref=e102]: "02"
+                - generic [ref=e103]: 平台审核
+                - generic [ref=e104]: 约1-3个工作日
+              - generic [ref=e105]: 平台进行资质审核
+        - generic [ref=e107]:
+          - generic [ref=e108]:
+            - generic [ref=e109]:
+              - img [ref=e110]
+              - generic [ref=e111]:
+                - generic [ref=e112]: 企业/公司
+                - generic [ref=e113]: 营业执照为企业/公司
+            - button "立即入驻" [ref=e114] [cursor=pointer]:
+              - generic [ref=e115]: 立即入驻
+          - generic [ref=e116]:
+            - img [ref=e117]
+            - text: 入驻限时福利，最高领800元流量券
+          - generic [ref=e118]:
+            - generic [ref=e120]:
+              - generic [ref=e122]:
+                - generic [ref=e123]: "01"
+                - generic [ref=e124]: 提交材料
+                - generic [ref=e125]: 约30分钟
+              - generic [ref=e126]: 上传营业执照、身份证等相关资质材料
+              - button "查看材料" [ref=e127] [cursor=pointer]:
+                - generic [ref=e128]: 查看材料
+            - generic [ref=e130]:
+              - generic [ref=e132]:
+                - generic [ref=e133]: "02"
+                - generic [ref=e134]: 平台审核
+                - generic [ref=e135]: 约1-3个工作日
+              - generic [ref=e136]: 平台进行资质审核
+            - generic [ref=e138]:
+              - generic [ref=e140]:
+                - generic [ref=e141]: "03"
+                - generic [ref=e142]: 账户验证
+                - generic [ref=e143]: 约10小时
+              - generic [ref=e144]: 实名认证或对公账户打款验证
+        - generic [ref=e146]:
+          - generic [ref=e147]:
+            - generic [ref=e148]:
+              - img [ref=e149]
+              - generic [ref=e150]:
+                - generic [ref=e151]: 个人身份
+                - generic [ref=e152]: 无营业执照，个人开店
+            - button "立即入驻" [ref=e153] [cursor=pointer]:
+              - generic [ref=e154]: 立即入驻
+          - generic [ref=e155]: 年累计销售额低于10万元，部分类目不支持
+          - generic [ref=e156]:
+            - generic [ref=e158]:
+              - generic [ref=e160]:
+                - generic [ref=e161]: "01"
+                - generic [ref=e162]: 提交材料
+                - generic [ref=e163]: 约30分钟
+              - generic [ref=e164]: 上传身份证件后填写店铺信息
+              - button "查看材料" [ref=e165] [cursor=pointer]:
+                - generic [ref=e166]: 查看材料
+            - generic [ref=e168]:
+              - generic [ref=e170]:
+                - generic [ref=e171]: "02"
+                - generic [ref=e172]: 真实性认证
+                - generic [ref=e173]: 约1-3个工作日
+              - generic [ref=e174]: 完成人脸识别或银行卡验证
+      - generic [ref=e175]:
+        - heading "你也可以像他们一样，谱写你的生意奇迹" [level=2] [ref=e176]
+        - list [ref=e177]:
+          - button "精选" [ref=e178] [cursor=pointer]
+          - button "服装饰品" [ref=e179] [cursor=pointer]
+          - button "户外鞋包" [ref=e180] [cursor=pointer]
+          - button "居家百货" [ref=e181] [cursor=pointer]
+          - button "鲜食生活" [ref=e182] [cursor=pointer]
+        - list [ref=e183]:
+          - listitem [ref=e184] [cursor=pointer]:
+            - link "木子诺糕点 木子诺糕点 综合型 搜索/热点运营 +75% 全店GMV环比 +250% 商品卡GMV环比 “蹭”热点国色芳华，搜索SEO+看后搜运营加速爆发成就赠礼顶流" [ref=e185]:
+              - /url: https://school.jinritemai.com/doudian/web/article/aJMJV6YyTR7w
+              - generic [ref=e186]:
+                - img "木子诺糕点" [ref=e187]
+                - generic [ref=e188]: 木子诺糕点
+                - generic [ref=e189]:
+                  - generic [ref=e190]: 综合型
+                  - generic [ref=e192]: 搜索/热点运营
+              - generic [ref=e193]:
+                - generic [ref=e194]:
+                  - generic [ref=e195]:
+                    - generic [ref=e196]: +75%
+                    - generic [ref=e198]: 全店GMV环比
+                  - generic [ref=e199]:
+                    - generic [ref=e200]: +250%
+                    - generic [ref=e202]: 商品卡GMV环比
+                - generic [ref=e206]: “蹭”热点国色芳华，搜索SEO+看后搜运营加速爆发成就赠礼顶流
+          - listitem [ref=e207] [cursor=pointer]:
+            - link "布小匠 布小匠 综合型 成长激励 120%+ 活动期间GMV爆发 40%+ 短视频引流直播成交占比" [ref=e208]:
+              - /url: https://school.jinritemai.com/doudian/web/article/aJVuV96iuZ4j
+              - generic [ref=e209]:
+                - img "布小匠" [ref=e210]
+                - generic [ref=e211]: 布小匠
+                - generic [ref=e212]:
+                  - generic [ref=e213]: 综合型
+                  - generic [ref=e215]: 成长激励
+              - generic [ref=e217]:
+                - generic [ref=e218]:
+                  - generic [ref=e219]: 120%+
+                  - generic [ref=e221]: 活动期间GMV爆发
+                - generic [ref=e222]:
+                  - generic [ref=e223]: 40%+
+                  - generic [ref=e225]: 短视频引流直播成交占比
+          - listitem [ref=e226] [cursor=pointer]:
+            - link "BOYZTUFF BOYZTUFF 自播型 营销大促 50万+ 大促30天GMV 2000+ 大促30天订单量" [ref=e227]:
+              - /url: https://school.jinritemai.com/doudian/web/article/aJVDdCXasiuo
+              - generic [ref=e228]:
+                - img "BOYZTUFF" [ref=e229]
+                - generic [ref=e230]: BOYZTUFF
+                - generic [ref=e231]:
+                  - generic [ref=e232]: 自播型
+                  - generic [ref=e234]: 营销大促
+              - generic [ref=e236]:
+                - generic [ref=e237]:
+                  - generic [ref=e238]: 50万+
+                  - generic [ref=e240]: 大促30天GMV
+                - generic [ref=e241]:
+                  - generic [ref=e242]: 2000+
+                  - generic [ref=e244]: 大促30天订单量
+      - generic [ref=e245]:
+        - heading "坐拥抖音亿级流量， 多种经营方式 任你选" [level=2] [ref=e246]:
+          - text: 坐拥抖音亿级流量，
+          - generic [ref=e247]: 多种经营方式
+          - text: 任你选
+        - generic [ref=e248]:
+          - generic [ref=e253]:
+            - button "直播间 没有直播团队？抖音千万达人帮你带货" [ref=e254] [cursor=pointer]:
+              - generic [ref=e255]: 直播间
+              - generic [ref=e256]: 没有直播团队？抖音千万达人帮你带货
+            - button "短视频 不会做视频？AI一键成片帮你搞定" [ref=e257] [cursor=pointer]:
+              - generic [ref=e258]: 短视频
+              - generic [ref=e259]: 不会做视频？AI一键成片帮你搞定
+            - button "抖音商城 全年大促不停歇，流量倾斜不用愁" [ref=e260] [cursor=pointer]:
+              - generic [ref=e261]: 抖音商城
+              - generic [ref=e262]: 全年大促不停歇，流量倾斜不用愁
+            - button "抖音搜索 智能数据诊断，轻松提升搜索排名" [ref=e263] [cursor=pointer]:
+              - generic [ref=e264]: 抖音搜索
+              - generic [ref=e265]: 智能数据诊断，轻松提升搜索排名
+          - generic [ref=e268]:
+            - img "直播间" [ref=e270]
+            - img "短视频" [ref=e272]
+            - img "抖音商城" [ref=e274]
+            - img "抖音搜索" [ref=e276]
+      - generic [ref=e277]:
+        - heading "全程的陪伴，助你收获第一桶金" [level=2] [ref=e278]
+        - generic [ref=e279]:
+          - article [ref=e280]:
+            - generic [ref=e282]:
+              - generic [ref=e284]: 开店阶段
+              - generic [ref=e285]:
+                - img "成本低 启动快" [ref=e287]
+                - heading "成本低 启动快" [level=3] [ref=e288]
+              - generic [ref=e289]:
+                - generic [ref=e290]:
+                  - generic [ref=e291]: "0"
+                  - generic [ref=e293]: 保证金
+                - generic [ref=e294]:
+                  - generic [ref=e295]: "0"
+                  - generic [ref=e297]: 服务费
+            - list [ref=e298]:
+              - listitem [ref=e299]:
+                - generic [ref=e301]: 全类目0元试运营
+              - listitem [ref=e302]:
+                - generic [ref=e304]: 先发品后缴保证金
+              - listitem [ref=e305]:
+                - generic [ref=e307]: 商品卡订单，不收服务费
+          - article [ref=e308]:
+            - generic [ref=e310]:
+              - generic [ref=e312]: 发品阶段
+              - generic [ref=e313]:
+                - img "AI选品 做视频" [ref=e315]
+                - heading "AI选品 做视频" [level=3] [ref=e316]
+              - generic [ref=e318]:
+                - generic [ref=e319]: 999+
+                - generic [ref=e321]: 款热销货源
+            - list [ref=e322]:
+              - listitem [ref=e323]:
+                - generic [ref=e325]: AI商机洞察，专属选品建议
+              - listitem [ref=e326]:
+                - generic [ref=e328]: 跨平台一键铺货，自动上货
+              - listitem [ref=e329]:
+                - generic [ref=e331]: AI生成视频和商品主图
+          - article [ref=e332]:
+            - generic [ref=e334]:
+              - generic [ref=e336]: 运营阶段
+              - generic [ref=e337]:
+                - img "高流量 达人带货" [ref=e339]
+                - heading "高流量 达人带货" [level=3] [ref=e340]
+              - generic [ref=e342]:
+                - generic [ref=e343]: 10000+
+                - generic [ref=e345]: 流量券
+            - list [ref=e346]:
+              - listitem [ref=e347]:
+                - generic [ref=e349]: 限时秒杀等营销手段
+              - listitem [ref=e350]:
+                - generic [ref=e352]: 达人合作生态
+              - listitem [ref=e353]:
+                - generic [ref=e355]: 短视频、搜索多场域转化
+          - article [ref=e356]:
+            - generic [ref=e358]:
+              - generic [ref=e360]: 经营阶段
+              - generic [ref=e361]:
+                - img "专属管家服务" [ref=e363]
+                - heading "专属管家服务" [level=3] [ref=e364]
+              - generic [ref=e366]:
+                - generic [ref=e367]: 1V1
+                - generic [ref=e369]: 专属辅导
+            - list [ref=e370]:
+              - listitem [ref=e371]:
+                - generic [ref=e373]: 1V1专属小二辅导
+              - listitem [ref=e374]:
+                - generic [ref=e376]: 官方数据分析工具
+              - listitem [ref=e377]:
+                - generic [ref=e379]: 海量官方课程体系
+  - contentinfo [ref=e380]:
+    - generic [ref=e381]:
+      - generic [ref=e382]:
+        - img "抖音电商 美好生活 触手可得" [ref=e383]
+        - generic [ref=e384]:
+          - heading "关注或联系我们" [level=3] [ref=e385]
+          - generic [ref=e386]:
+            - generic [ref=e387]:
+              - paragraph [ref=e388]: 下载抖店APP
+              - img "下载抖店APP" [ref=e389]
+            - generic [ref=e390]:
+              - paragraph [ref=e391]: 抖音官方账号
+              - img "抖音官方账号" [ref=e392]
+            - generic [ref=e393]:
+              - paragraph [ref=e394]: 微信公众号
+              - img "微信公众号" [ref=e395]
+      - generic [ref=e396]:
+        - generic [ref=e397]:
+          - generic [ref=e398]: 人工咨询热线
+          - generic [ref=e401] [cursor=pointer]: "950518"
+        - generic [ref=e402]:
+          - generic [ref=e403]: 廉洁举报
+          - generic [ref=e404]:
+            - generic [ref=e406] [cursor=pointer]: lianjie@bytedance.com
+            - link "举报入口" [ref=e408] [cursor=pointer]:
+              - /url: https://bytedance.larkoffice.com/share/base/form/shrcnTMx4X98p1ISCrklZnxvHHf
+        - generic [ref=e409]:
+          - generic [ref=e410]: 关联平台
+          - generic [ref=e411]:
+            - link "热招行业" [ref=e413] [cursor=pointer]:
+              - /url: /hot-category
+            - link "基地服务" [ref=e415] [cursor=pointer]:
+              - /url: https://fuwu.jinritemai.com/optimus/60dc30bd05420d0040d2f289
+            - link "开放平台" [ref=e417] [cursor=pointer]:
+              - /url: https://op.jinritemai.com/home
+            - link "服务市场" [ref=e419] [cursor=pointer]:
+              - /url: https://fuwu.jinritemai.com/?from=fxg_home_more
+            - link "全球购" [ref=e421] [cursor=pointer]:
+              - /url: https://b.guantou.com/welcome?source=doudian
+            - link "类目入驻" [ref=e423] [cursor=pointer]:
+              - /url: /category
+            - link "问答列表" [ref=e425] [cursor=pointer]:
+              - /url: /ask
+            - link "拍卖店" [ref=e427] [cursor=pointer]:
+              - /url: https://fxg.jinritemai.com/login/common?next=https%3A%2F%2Ffxg.jinritemai.com%2Fffa%2Fgov%2Fsettle%2Fhome%3Fshop_type%3D14%26vType%3D0
+            - link "字节跳动" [ref=e429] [cursor=pointer]:
+              - /url: https://www.bytedance.com/zh/
+            - link "抖音" [ref=e431] [cursor=pointer]:
+              - /url: https://www.douyin.com/
+            - link "今日头条" [ref=e433] [cursor=pointer]:
+              - /url: https://www.toutiao.com/
+            - link "西瓜视频" [ref=e435] [cursor=pointer]:
+              - /url: https://www.ixigua.com/
+            - link "抖音火山版" [ref=e437] [cursor=pointer]:
+              - /url: https://www.huoshanzhibo.com/
+            - link "巨量引擎" [ref=e439] [cursor=pointer]:
+              - /url: https://www.oceanengine.com/?source=doudian
+            - link "巨量百应" [ref=e441] [cursor=pointer]:
+              - /url: https://buyin.jinritemai.com/
+            - link "抖音电商" [ref=e443] [cursor=pointer]:
+              - /url: https://douyinec.com/
+        - generic [ref=e444]:
+          - generic [ref=e445]: 资质证照
+          - generic [ref=e446]:
+            - link "营业执照" [ref=e448] [cursor=pointer]:
+              - /url: https://lf3-static.bytednsdoc.com/obj/eden-cn/oadvyn-lm/ljhwZthlaukjlkulzlp/merchant-recruitment/pc/20250814-171406.png
+            - link "沪ICP备2021017807号-10" [ref=e450] [cursor=pointer]:
+              - /url: https://beian.miit.gov.cn/#/Integrated/index
+            - generic [ref=e451]:
+              - img [ref=e452]
+              - link "沪公网安备 31011002005972号" [ref=e453] [cursor=pointer]:
+                - /url: http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31011002005972
+            - link "增值电信业务经营许可证(沪B2-20220149)" [ref=e455] [cursor=pointer]:
+              - /url: https://lf3-static.bytednsdoc.com/obj/eden-cn/oadvyn-lm/ljhwZthlaukjlkulzlp/merchant-recruitment/pc/footer/434-01-089-上海格物致品网络科技有限公司-增值电信业务经营许可证（ICP、EDI）20241213-20270130.pdf
+            - link "(沪)网械平台备字[2022]第00002号" [ref=e457] [cursor=pointer]:
+              - /url: https://lf3-static.bytednsdoc.com/obj/eden-cn/oadvyn-lm/ljhwZthlaukjlkulzlp/merchant-recruitment/pc/footer/434-07-019-上海格物致品网络科技有限公司-医疗器械网络交易服务第三方平台备案凭证20250103.jpg
+            - generic [ref=e459] [cursor=pointer]: 沪网药信备字〔2025〕00219号
+            - generic [ref=e461] [cursor=pointer]: 沪网食备0000515号(第三方平台)
+            - link "(沪)网药平台备字[2023]第00004-007号" [ref=e463] [cursor=pointer]:
+              - /url: https://lf3-static.bytednsdoc.com/obj/eden-cn/oadvyn-lm/ljhwZthlaukjlkulzlp/merchant-recruitment/pc/footer/(沪)网药平台备字[2023]第00004-007号.png
+            - generic [ref=e465] [cursor=pointer]: 集邮市场开办者备案：沪集邮备006

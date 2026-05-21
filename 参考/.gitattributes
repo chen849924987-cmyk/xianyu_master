@@ -1,0 +1,10 @@
+# Hook / 脚本在 Windows 上若用 CRLF，可能导致 sh 解析异常；统一 LF
+.githooks/post-commit text eol=lf
+harness/hooks/*.mjs text eol=lf
+harness/lib/*.mjs text eol=lf
+harness/cli/*.mjs text eol=lf
+harness/git/*.mjs text eol=lf
+HANDOFF.json text eol=lf
+AGENT_*.md text eol=lf
+harness/harness.env text eol=lf
+harness/skills/*.md text eol=lf

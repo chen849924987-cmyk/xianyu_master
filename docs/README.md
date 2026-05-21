@@ -1,6 +1,9 @@
 # 闲鱼自动化助手 (xianyu-master)
 
-> **版本**：v2.1.0（Next.js 一体化架构）
+> **产品大版本**：v2（Next.js 一体化）  
+> **已发布小版本**：v2.0 · v2.1 · v2.1.1  
+> **开发中小版本**：v2.2（任务可观测性）  
+> **版本规则与任务清单**：[开发路线.md](开发路线.md)
 > **项目状态**：已升级为 Next.js 全栈应用
 
 ---
@@ -13,6 +16,27 @@
 - **`app/api/`** — Next.js API Routes 提供后端 REST API 和 SSE 实时推送
 - **`app/page.tsx`** — React 前端页面（HeroUI 设计规范）
 - **`lib/api-server.ts`** — 后端核心逻辑（任务执行、定时调度、日志存储）
+
+---
+
+## 文档导航
+
+以下链接用于文档预检查脚本（`.clinerules/hooks/pre-check-docs.py`）校验交叉引用，移动或改名时请同步更新本节。
+
+| 文档 | 链接 |
+|------|------|
+| 产品需求（PRD） | [产品需求文档-PRD](产品需求文档-PRD.md) |
+| 技术方案概要 | [技术方案设计](技术方案设计.md) |
+| 开发路线 | [开发路线](开发路线.md) |
+| 已完成清单与更新日志 | [已完成阶段详细清单与更新日志](已完成阶段详细清单与更新日志.md) |
+| 经验教训 | [经验教训汇总](经验教训汇总.md) |
+| 技术栈详情 | [技术栈](技术栈.md) |
+| 功能规格（模块与流程） | [功能规格说明](功能规格说明.md) |
+| 问题与修复记录 | [问题记录与修复日志](../测试脚本与问题记录/问题记录与修复日志.md) |
+| 脚手架说明 | [init-docs-scaffold.py](init-docs-scaffold.py)（交互式生成空白文档树） |
+| Harness 评估 | [harness-evaluation.md](harness-evaluation.md) |
+| 登录态操作手册 | [AI-handbook-xianyu-login-session](../参考/AI-handbook-xianyu-login-session.md) |
+| 开发规范（promot 入口） | [promot.md](../.clinerules/promot.md) |
 
 ---
 
@@ -31,6 +55,9 @@
 | 📈 数据报表 | Excel 格式的运营数据导出 | ✅ 可用 |
 | 🔌 飞书集成 | 飞书聊天链接获取与交互 | ✅ 可用 |
 | 🔐 登录态管理 | 闲鱼登录态持久化保存、校验与清除 | ✅ 可用 |
+| 📋 功能工作台 | 每任务独立页（历史 / 实时 / 报错） | 🔄 v2.2 接通 |
+| 🏭 91 仓库导入 | 无卡密上传 `汇总_资源` 模板 | 📝 v2.3 |
+| 📱 手机闲鱼信誉分 | USB 连接后读取 App 设置中的信誉分 | 📝 v2.4 |
 
 ---
 
@@ -108,19 +135,28 @@ pnpm build && pnpm start
 
 ```
 xianyu_master/
-├── docs/                          # 项目文档
-│   ├── README.md                  # 本文件 - 项目概述
-│   ├── requirements.md            # 需求文档
-│   ├── functional-spec.md         # 功能文档
-│   ├── ui-spec.md                 # UI 设计规范文档
-│   ├── roadmap.md                 # 开发路线图
-│   ├── tech-stack.md              # 技术栈详细文档
-│   ├── AI-handbook-xianyu-login-session.md  # 登录态操作手册
+├── docs/                          # 项目文档（主文档均为中文文件名）
+│   ├── README.md                  # 本文件 - 项目概述与文档导航
+│   ├── 产品需求文档-PRD.md
+│   ├── 技术方案设计.md
+│   ├── 开发路线.md
+│   ├── 已完成阶段详细清单与更新日志.md
+│   ├── 经验教训汇总.md
+│   ├── 技术栈.md
+│   ├── 功能规格说明.md
+│   ├── init-docs-scaffold.py      # 文档脚手架脚本（新项目可复制）
 │   └── harness-evaluation.md      # Harness 工程评估
+├── 参考/                          # 外部/通用参考（含登录态手册）
+│   └── AI-handbook-xianyu-login-session.md
+├── 测试脚本与问题记录/
+│   ├── 问题记录与修复日志.md
+│   └── 归档/
 │
 ├── app/                           # Next.js 应用目录
 │   ├── layout.tsx                 # 根布局
-│   ├── page.tsx                   # 首页（管理面板 UI）
+│   ├── page.tsx                   # 控制台（Hash 切换定时/日志/登录）
+│   ├── features/[slug]/page.tsx   # 各功能独立工作台（历史/实时/报错日志占位）
+│   ├── components/                # ConsoleShell、FeatureWorkspace 等
 │   ├── globals.css                # 全局样式（HeroUI 规范）
 │   └── api/                       # API Routes（后端接口）
 │       ├── session/
@@ -135,6 +171,7 @@ xianyu_master/
 │       └── events/route.ts        # GET SSE 实时事件推送
 │
 ├── lib/
+│   ├── feature-registry.ts        # 功能模块 slug / 脚本路径注册表
 │   ├── api-server.ts              # 后端核心逻辑（任务执行、定时调度、数据存储）
 │   ├── session-manager.ts         # 登录态管理器（保存/校验/清除/状态查询）
 │   └── types.ts                   # 类型定义（可选）
@@ -150,7 +187,7 @@ xianyu_master/
 │   ├── scripts/                   # 辅助脚本
 │   └── examples/                  # 示例脚本
 │
-├── .clinerules/                   # 开发规范配置
+├── .clinerules/                   # 开发规范配置（含 ui-spec.md、hooks）
 ├── package.json                   # 项目配置
 ├── next.config.ts                 # Next.js 配置
 ├── tsconfig.json                  # TypeScript 配置
@@ -164,7 +201,7 @@ xianyu_master/
 
 ## 登录态管理
 
-详情请参考：`docs/AI-handbook-xianyu-login-session.md`
+详情请参考：[AI-handbook-xianyu-login-session](../参考/AI-handbook-xianyu-login-session.md)
 
 ### 功能概述
 
@@ -206,12 +243,13 @@ xianyu_master/
 
 | 路径 | 页面 | 说明 |
 |------|------|------|
-| `/` | 控制台（Dashboard） | 统计概览 + 所有任务列表 + 最近定时任务 |
+| `/` | 控制台（Dashboard） | 统计概览 + 任务列表（**进入工作台**）+ 最近定时任务 |
+| `/features/[slug]` | 功能工作台 | 单功能页：历史记录、实时日志、报错日志（占位，见 [功能规格说明](功能规格说明.md)） |
 | `/#schedule` | 定时任务管理 | 增删改查定时任务 |
-| `/#logs` | 运行日志 | 实时任务日志查看 |
+| `/#logs` | 运行日志 | 全局任务日志 |
 | `/#session` | 登录管理 | 保存/校验/清除闲鱼登录态 |
 
-（注：采用单页应用模式，通过 Tab 切换不同视图）
+侧栏「功能模块」列出全部 slug，与 `lib/feature-registry.ts` 一致。
 
 ---
 
@@ -241,7 +279,7 @@ xianyu_master/
 
 ## 开发计划
 
-详细开发路线请参考：`docs/roadmap.md`
+详细开发路线请参考：[开发路线](开发路线.md)
 
 ### 已完成
 1. ✅ 废弃旧版 `backend/main.cjs` HTTP 服务器

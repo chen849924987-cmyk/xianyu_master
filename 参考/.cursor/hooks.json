@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs beforeSubmitPrompt harness/hooks/prompt-session-end.mjs",
+        "timeout": 120
+      }
+    ],
+    "sessionStart": [
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs sessionStart harness/hooks/session-start-context.mjs",
+        "timeout": 30
+      }
+    ],
+    "afterAgentResponse": [
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs afterAgentResponse harness/hooks/after-agent-response.mjs",
+        "timeout": 30
+      }
+    ],
+    "stop": [
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs stop harness/hooks/agent-stop.mjs",
+        "timeout": 120,
+        "loop_limit": 5
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs beforeShellExecution harness/hooks/before-shell-safety.mjs",
+        "timeout": 30
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs preToolUse harness/hooks/pre-tool-safety.mjs",
+        "timeout": 30,
+        "matcher": "Shell"
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs afterFileEdit harness/hooks/after-file-standards.mjs",
+        "matcher": "Write|StrReplace",
+        "timeout": 60
+      },
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs afterFileEdit harness/hooks/after-file-verify.mjs",
+        "matcher": "Write",
+        "timeout": 300
+      },
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs afterFileEdit harness/hooks/after-file-readme-features.mjs",
+        "matcher": "Write",
+        "timeout": 60
+      },
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs afterFileEdit harness/hooks/after-file-sync-feature-mcp-docs.mjs",
+        "matcher": "Write|StrReplace",
+        "timeout": 90
+      },
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs afterFileEdit harness/hooks/after-file-sync-harness-skill.mjs",
+        "matcher": "Write|StrReplace",
+        "timeout": 120
+      },
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs afterFileEdit harness/hooks/after-file-sync-hook-docs.mjs",
+        "matcher": "Write|StrReplace",
+        "timeout": 60
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs postToolUse harness/hooks/post-tool-runtime.mjs",
+        "timeout": 15
+      }
+    ],
+    "postToolUseFailure": [
+      {
+        "command": "node --import ./harness/lib/load-harness-env.mjs harness/lib/run-hook.mjs postToolUseFailure harness/hooks/post-tool-failure-runtime.mjs",
+        "timeout": 15
+      }
+    ]
+  }
+}
